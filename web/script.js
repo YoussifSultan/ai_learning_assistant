@@ -91,6 +91,7 @@ async function showPage(page, e, isloading = false) {
   fetch("../pages/" + page)
     .then((res) => res.text())
     .then((html) => (document.getElementById("editor").innerHTML = html));
+  loadpage();
 }
 function goBack() {
   saveContent();
@@ -98,31 +99,32 @@ function goBack() {
   fetch("../pages/" + historyPages.at(-1))
     .then((res) => res.text())
     .then((html) => (document.getElementById("editor").innerHTML = html));
+  loadpage();
 }
-
+function loadpage() {
+  // load lecture
+  const lecture_div = document.getElementById("lecture_location");
+  const lecture_player = document.getElementById("lecture_player");
+  lecture_player.src = lecture_div.dataset.lectureLocation;
+}
 async function create_lecture() {
-  const selection = window.getSelection();
-
   const content = editor.innerHTML;
 
   const loader = LoadingBox("Fetching data...");
   loader.show();
-  lecture_filename = backend.create_lecture(content);
+  lecture_filelocation = await backend.create_lecture(content);
   loader.hide();
   // build the link and attach the filename as data attribute
-  const audio = document.createElement("audio");
-  audio.src = lecture_filename;
-  audio.controls = true; // show play/pause UI
-  audio.autoplay = false; // don't auto-play
-  audio.loop = false; // don't repeat by default
-  document.getElementById("lectures_audio").appendChild(audio);
-  audio.load();
-
-  // check if metadata arrives
-  audio.addEventListener("loadedmetadata", async () => {
-    await window.pywebview.api.print("" + audio.duration);
-  });
-
+  const lecture_player = document.getElementById("lecture_player");
+  lecture_filelocation = "../" + lecture_filelocation;
+  lecture_player.src = lecture_filelocation;
+  lecture_player.play(); // optional — plays automatically
+  editor.innerHTML =
+    editor.innerHTML +
+    '<div id="lecture_location" data-lecture-location="' +
+    lecture_filelocation +
+    '" ></div>';
+  saveContent();
   // move caret after inserted wrapper
   selection.removeAllRanges();
 }
@@ -175,3 +177,12 @@ function LoadingBox(message = "Loading...") {
     remove: () => box.remove(),
   };
 }
+
+const observer = new MutationObserver(() => {
+  const lecture_div = document.getElementById("lecture_location");
+  if (lecture_div) {
+    loadpage(); // ✅ element appeared — safe to run
+  }
+});
+
+observer.observe(editor, { childList: true, subtree: true });

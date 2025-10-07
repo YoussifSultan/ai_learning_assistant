@@ -1,25 +1,74 @@
 <div>
   <h2>What is Continuity?</h2>
-  <p>In mathematics, <strong>continuity</strong> is a property of functions that describes whether a function has no sudden breaks, jumps, or holes in its graph. For a function to be continuous at a point, you should be able to draw its graph at that point without lifting your pencil. This concept is crucial because it underpins the idea of derivatives, which measure how a function changes (its rate of change).</p>
+  <p>
+    In mathematics, <strong>continuity</strong> is a property of functions that
+    describes whether a function has no sudden breaks, jumps, or holes in its
+    graph. For a function to be continuous at a point, you should be able to
+    draw its graph at that point without lifting your pencil. This concept is
+    crucial because it underpins the idea of derivatives, which measure how a
+    function changes (its rate of change).
+  </p>
 
   <h3>Mathematical Definition of Continuity</h3>
-  <p>A function <math display="inline"><mi>f</mi></math> is <strong>continuous at a point</strong> <math display="inline"><mi>c</mi></math> if it satisfies three conditions:</p>
+  <p>
+    A function <math display="inline"><mi>f</mi></math> is
+    <strong>continuous at a point</strong>
+    <math display="inline"><mi>c</mi></math> if it satisfies three conditions:
+  </p>
   <ol>
-    <li>The limit of <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> as <math display="inline"><mi>x</mi></math> approaches <math display="inline"><mi>c</mi></math> exists.</li>
-    <li>The function <math display="inline"><mi>f</mi></math> is defined at <math display="inline"><mi>c</mi></math>, meaning <math display="inline"><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math> is a real number.</li>
-    <li>The value of the limit equals the function's value at <math display="inline"><mi>c</mi></math>: <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math>.</li>
+    <li>
+      The limit of
+      <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> as
+      <math display="inline"><mi>x</mi></math> approaches
+      <math display="inline"><mi>c</mi></math> exists.
+    </li>
+    <li>
+      The function <math display="inline"><mi>f</mi></math> is defined at
+      <math display="inline"><mi>c</mi></math>, meaning
+      <math display="inline"><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math> is
+      a real number.
+    </li>
+    <li>
+      The value of the limit equals the function's value at
+      <math display="inline"><mi>c</mi></math>:
+      <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math>.
+    </li>
   </ol>
-  <p>If a function is continuous at every point in its domain, we say it is <strong>continuous everywhere</strong> or simply continuous.</p>
+  <p>
+    If a function is continuous at every point in its domain, we say it is
+    <strong>continuous everywhere</strong> or simply continuous.
+  </p>
 
   <h3>Why is Continuity Important?</h3>
-  <p>Continuity ensures that small changes in the input lead to small changes in the output, which is essential for calculus. For example, derivatives (which you'll learn about soon) rely on continuity to define the slope of a curve at a point. If a function isn't continuous, it might not have a well-defined derivative there.</p>
+  <p>
+    Continuity ensures that small changes in the input lead to small changes in
+    the output, which is essential for calculus. For example, derivatives (which
+    you'll learn about soon) rely on continuity to define the slope of a curve
+    at a point. If a function isn't continuous, it might not have a well-defined
+    derivative there.
+  </p>
 
   <h3>Examples of Continuous and Discontinuous Functions</h3>
   <p>Let's look at some examples to illustrate continuity:</p>
   <ul>
-    <li><strong>Continuous Function:</strong> <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math> (a parabola). At any point, like <math display="inline"><mi>x</mi><mo>=</mo><mn>2</mn></math>, the limit exists, the function is defined, and they match: <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><mn>2</mn></mrow></munder><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>4</mn></math> and <math display="inline"><mi>f</mi><mo>(</mo><mn>2</mn><mo>)</mo><mo>=</mo><mn>4</mn></math>.</li>
-    <li><strong>Discontinuous Function:</strong> <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mi>x</mi></mfrac></math> at <math display="inline"><mi>x</mi><mo>=</mo><mn>0</mn></math>. Here, the function is not defined at <math display="inline"><mi>x</mi><mo>=</mo><mn>0</mn></math>, so it fails the second condition. The graph has a vertical asymptote, causing a break.</li>
-    <li><strong>Another Discontinuous Example:</strong> A piecewise function like:
+    <li>
+      <strong>Continuous Function:</strong>
+      <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>
+      (a parabola). At any point, like
+      <math display="inline"><mi>x</mi><mo>=</mo><mn>2</mn></math>, the limit exists, the function is defined, and they match:
+      <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><mn>2</mn></mrow></munder><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>4</mn></math>
+      and
+      <math display="inline"><mi>f</mi><mo>(</mo><mn>2</mn><mo>)</mo><mo>=</mo><mn>4</mn></math>.
+    </li>
+    <li>
+      <strong>Discontinuous Function:</strong>
+      <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mi>x</mi></mfrac></math>
+      at <math display="inline"><mi>x</mi><mo>=</mo><mn>0</mn></math>. Here, the function is not defined at
+      <math display="inline"><mi>x</mi><mo>=</mo><mn>0</mn></math>, so it fails the second condition. The graph has a vertical asymptote,
+      causing a break.
+    </li>
+    <li>
+      <strong>Another Discontinuous Example:</strong> A piecewise function like:
       <math display="block">
         <mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo>
         <mrow>
@@ -36,15 +85,37 @@
           </mtable>
         </mrow>
       </math>
-      At <math display="inline"><mi>x</mi><mo>=</mo><mn>1</mn></math>, the left-hand limit is <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><msup><mn>1</mn><mo>−</mo></msup></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mn>2</mn></math>, but the right-hand limit is <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><msup><mn>1</mn><mo>+</mo></msup></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mn>3</mn></math>, so the overall limit does not exist. Also, <math display="inline"><mi>f</mi><mo>(</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>3</mn></math>, but since the limit doesn't exist, it's discontinuous.</li>
+      At <math display="inline"><mi>x</mi><mo>=</mo><mn>1</mn></math>, the left-hand limit is
+      <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><msup><mn>1</mn><mo>−</mo></msup></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mn>2</mn></math>, but the right-hand limit is
+      <math display="inline"><munder><mi>lim</mi><mrow><mi>x</mi><mo>→</mo><msup><mn>1</mn><mo>+</mo></msup></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mn>3</mn></math>, so the overall limit does not exist. Also,
+      <math display="inline"><mi>f</mi><mo>(</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>3</mn></math>, but since the limit doesn't exist, it's discontinuous.
+    </li>
   </ul>
 
   <h3>Analogy for Continuity</h3>
-  <p>Imagine drawing a curve on paper without lifting your pencil. If you can do this smoothly over an interval, the function is continuous there. If you have to jump or leave a gap, it's discontinuous. For instance, a straight line is continuous, but a step function (like a staircase) has jumps.</p>
+  <p>
+    Imagine drawing a curve on paper without lifting your pencil. If you can do
+    this smoothly over an interval, the function is continuous there. If you
+    have to jump or leave a gap, it's discontinuous. For instance, a straight
+    line is continuous, but a step function (like a staircase) has jumps.
+  </p>
 
   <h3>Connection to Derivatives</h3>
-  <p>As mentioned in your context, continuity is the foundation for derivatives. A derivative measures the instantaneous rate of change of a function, and it's defined using limits. If a function is not continuous at a point, it can't have a derivative there because the limit needed for the derivative wouldn't exist or match up. For example, in the discontinuous piecewise function above, you can't find a unique slope at the jump point.</p>
+  <p>
+    As mentioned in your context, continuity is the foundation for derivatives.
+    A derivative measures the instantaneous rate of change of a function, and
+    it's defined using limits. If a function is not continuous at a point, it
+    can't have a derivative there because the limit needed for the derivative
+    wouldn't exist or match up. For example, in the discontinuous piecewise
+    function above, you can't find a unique slope at the jump point.
+  </p>
 
   <hr>
-  <p><strong>Summary:</strong> Continuity means a function has no breaks, and it's checked by ensuring the limit exists, the function is defined, and they are equal. This is key for understanding how functions behave and for calculus topics like derivatives.</p>
+  <p>
+    <strong>Summary:</strong> Continuity means a function has no breaks, and
+    it's checked by ensuring the limit exists, the function is defined, and they
+    are equal. This is key for understanding how functions behave and for
+    calculus topics like derivatives.
+  </p>
 </div>
+<div id="lecture_location" data-lecture-location="../assets/audio/final_lecture.mp3"></div>

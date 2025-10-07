@@ -31,31 +31,32 @@ def create_diagram( nodes, edges) -> str:
 
 
 def create_audio(text) ->str:
-    # from gtts import gTTS
+    from gtts import gTTS
     from shutil import rmtree
-    # os.makedirs("assets/audio/temp")
-    # chunks = text.split(".")  # simple split by sentences
+    os.makedirs("assets/audio/temp")
+    chunks = text.split(".")  # simple split by sentences
 
-    # i = 1
-    # for chunk in chunks:
-    #     if chunk.strip():  # skip empty
-    #         tts = gTTS(text=chunk, lang="en")
-    #         filename = f"assets/audio/temp/part{i}.mp3"
-    #         tts.save(filename)
-    #         print(f"Saved {filename}")
-    #         i += 1
+    i = 1
+    for chunk in chunks:
+        if chunk.strip():  # skip empty
+            tts = gTTS(text=chunk, lang="en")
+            filename = f"assets/audio/temp/part{i}.mp3"
+            tts.save(filename)
+            print(f"Saved {filename}")
+            i += 1
 
-    # You can then merge these MP3s using pydub
+    # # You can then merge these MP3s using pydub
     from pydub import AudioSegment
 
     combined = AudioSegment.empty()
-    for j in range(1, 55):
+    for j in range(1, len(chunks)):
         path = f"assets/audio/temp/part{j}.mp3"
         combined += AudioSegment.from_mp3(path)
     unique_id = uuid.uuid4()
-    location =f"{unique_id}.mp3"
+    location =  f"assets/audio/{unique_id}.mp3"
+
     combined.export(location, format="mp3")
-    rmtree("assets/audio/temp")
-    return f"{unique_id}.mp3"
+    # rmtree("assets/audio/temp")
+    return location
 
 

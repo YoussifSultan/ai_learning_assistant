@@ -35,7 +35,12 @@
         ></iframe>
       </section>
       <h2>Lecture Player</h2>
-      <div id="lectures_audio">Loading...</div>
+      <div>
+        <audio controls id="lecture_player">
+          <source src="../assets/audio/final_lecture.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </div>
       <div id="menu">
         <button onclick="copyText()">📋</button>
         <button onclick="create_page()">Expand</button>

@@ -40,9 +40,9 @@ class Backend(QObject):
     
     @pyqtSlot(str,result=str)
     def create_lecture(self,article):
-        # lecture = generate_lecture(article, "grade 11")
-        lecture_filename = create_audio("")
-        return lecture_filename
+        lecture = generate_lecture(article, "grade 11")
+        lecture_filelocation = create_audio(lecture)
+        return lecture_filelocation
     
 
     @pyqtSlot(str, result=str)
