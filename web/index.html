@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Editor with Sidebar</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  </head>
+  <body onload="showPage('TEST_saved.html',event,true)">
+    <nav class="navbar">
+      <button onclick="saveContent()">Save</button>
+      <div class="dropdown">
+        <button class="dropbtn">Create ▼</button>
+        <div class="dropdown-content">
+          <a href="#" onclick="create_mindmap()">Mindmap</a>
+          <a href="#" onclick="create_lecture()">Lecture</a>
+          <a href="#" onclick="createFlowchart()">Flowchart</a>
+          <a href="#" onclick="createFlashcards()">Flashcards</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main">
+      <div contenteditable="false" id="lectures_audio"></div>
+      <div contenteditable="false" id="mindmap"></div>
+      <div contenteditable="false" id="flowchart"></div>
+      <!-- ✅ Embedded mindmap.html -->
+      <section id="mindmap-section">
+        <h2>Mindmap</h2>
+        <iframe
+          src="../pages/TEST_saved.html"
+          width="100%"
+          height="500px"
+          style="border: 1px solid #ccc; border-radius: 8px"
+        ></iframe>
+      </section>
+      <h2>Lecture Player</h2>
+      <div id="lectures_audio">Loading...</div>
+      <div id="menu">
+        <button onclick="copyText()">📋</button>
+        <button onclick="create_page()">Expand</button>
+      </div>
+
+      <article
+        class="markdown-term"
+        id="editor"
+        class="editable"
+        contenteditable="true"
+      ></article>
+      <button onclick="goBack()">< Back</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

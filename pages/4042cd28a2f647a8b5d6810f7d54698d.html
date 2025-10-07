@@ -1,0 +1,281 @@
+<div>
+  <h1>Foundation of Derivatives</h1>
+  <p>
+    In mathematics, particularly in calculus, the
+    <strong>foundation of derivatives</strong> revolves around the concept of
+    the <em>rate of change</em>. At its core, a derivative measures how a
+    function changes as its input changes, giving us the instantaneous rate of
+    change. This is crucial for understanding motion, growth, and many
+    real-world phenomena. For grade 11 students, we'll break this down step by
+    step, using simple language, examples, and analogies.
+  </p>
+
+  <hr>
+
+  <h2>What is a Derivative?</h2>
+  <p>
+    A derivative represents the slope of a tangent line to a curve at a specific
+    point. In everyday terms, if you think of a graph showing distance over
+    time, the derivative at any point tells you the
+    <em>instantaneous speed</em>—not just the average speed over an interval.
+  </p>
+  <ul>
+    <li>
+      <strong>Key Idea</strong>: It answers the question, "How fast is something
+      changing right now?"
+    </li>
+    <li>
+      <strong>Analogy</strong>: Imagine driving a car. Your speedometer shows
+      your instantaneous speed (derivative of distance with respect to time),
+      while the average speed is like the total distance divided by total time.
+    </li>
+  </ul>
+
+  <h2>Mathematical Definition</h2>
+  <p>
+    The derivative of a function
+    <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> at a
+    point <math display="inline"><mi>x</mi></math> is defined using limits. This
+    is often called the <em>limit definition of the derivative</em>:
+  </p>
+  <math display="block">
+    <mrow>
+      <mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo>
+      <mo>=</mo>
+      <munder>
+        <mi>lim</mi>
+        <mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow>
+      </munder>
+      <mfrac>
+        <mrow>
+          <mi>f</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>h</mi><mo>)</mo>
+          <mo>−</mo>
+          <mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo>
+        </mrow>
+        <mi>h</mi>
+      </mfrac>
+    </mrow>
+  </math>
+  <p>Where:</p>
+  <ul>
+    <li>
+      <math display="inline"><mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>
+      is the derivative (read as "f prime of x").
+    </li>
+    <li>
+      <math display="inline"><mi>h</mi></math> is a small change in
+      <math display="inline"><mi>x</mi></math>.
+    </li>
+    <li>
+      The limit ensures we're looking at an infinitesimally small interval,
+      giving the instantaneous rate.
+    </li>
+  </ul>
+  <p>
+    This formula calculates the slope of the secant line between two points and
+    shrinks the distance to zero to get the tangent slope.
+  </p>
+
+  <h2>Why Use Limits?</h2>
+  <p>
+    Limits help us handle situations where change happens over tiny intervals.
+    Without limits, we'd only have average rates, which might not reflect what's
+    happening at an exact moment. For example:
+  </p>
+  <table border="1" style="border-collapse: collapse; width: 100%">
+    <thead>
+      <tr>
+        <th>Concept</th>
+        <th>Description</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Average Rate of Change</td>
+        <td>
+          Change over an interval:
+          <math display="inline"><mfrac><mrow><mi>f</mi><mo>(</mo><mi>b</mi><mo>)</mo><mo>−</mo><mi>f</mi><mo>(</mo><mi>a</mi><mo>)</mo></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac></math>
+        </td>
+        <td>
+          Average speed from time <math display="inline"><mi>a</mi></math> to
+          <math display="inline"><mi>b</mi></math>
+        </td>
+      </tr>
+      <tr>
+        <td>Instantaneous Rate of Change (Derivative)</td>
+        <td>
+          Change at a point:
+          <math display="inline"><mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo></math>
+        </td>
+        <td>
+          Speed at an exact moment, like when
+          <math display="inline"><mi>x</mi><mo>=</mo><mn>2</mn></math> seconds
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Step-by-Step Example</h2>
+  <p>
+    Let's find the derivative of a simple function:
+    <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>
+    at <math display="inline"><mi>x</mi><mo>=</mo><mn>1</mn></math>.
+  </p>
+  <ol>
+    <li>
+      Start with the limit definition:
+      <math display="block">
+        <mrow>
+          <mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo>
+          <mo>=</mo>
+          <munder>
+            <mi>lim</mi>
+            <mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow>
+          </munder>
+          <mfrac>
+            <mrow>
+              <mi>f</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>h</mi><mo>)</mo>
+              <mo>−</mo>
+              <mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo>
+            </mrow>
+            <mi>h</mi>
+          </mfrac>
+        </mrow>
+      </math>
+    </li>
+    <li>
+      Substitute
+      <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>:
+      <math display="block">
+        <mrow>
+          <mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo>
+          <mo>=</mo>
+          <munder>
+            <mi>lim</mi>
+            <mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow>
+          </munder>
+          <mfrac>
+            <mrow>
+              <msup><mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>h</mi><mo>)</mo></mrow><mn>2</mn></msup>
+              <mo>−</mo>
+              <msup><mi>x</mi><mn>2</mn></msup>
+            </mrow>
+            <mi>h</mi>
+          </mfrac>
+        </mrow>
+      </math>
+    </li>
+    <li>
+      Expand and simplify:
+      <math display="block">
+        <mrow>
+          <mo>=</mo>
+          <munder>
+            <mi>lim</mi>
+            <mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow>
+          </munder>
+          <mfrac>
+            <mrow>
+              <msup><mi>x</mi><mn>2</mn></msup>
+              <mo>+</mo>
+              <mn>2</mn><mi>x</mi><mi>h</mi>
+              <mo>+</mo>
+              <msup><mi>h</mi><mn>2</mn></msup>
+              <mo>−</mo>
+              <msup><mi>x</mi><mn>2</mn></msup>
+            </mrow>
+            <mi>h</mi>
+          </mfrac>
+          <mo>=</mo>
+          <munder>
+            <mi>lim</mi>
+            <mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow>
+          </munder>
+          <mfrac>
+            <mrow><mn>2</mn><mi>x</mi><mi>h</mi><mo>+</mo><msup><mi>h</mi><mn>2</mn></msup></mrow>
+            <mi>h</mi>
+          </mfrac>
+        </mrow>
+      </math>
+    </li>
+    <li>
+      Factor out <math display="inline"><mi>h</mi></math>:
+      <math display="block">
+        <mrow>
+          <mo>=</mo>
+          <munder>
+            <mi>lim</mi>
+            <mrow><mi>h</mi><mo>→</mo><mn>0</mn></mrow>
+          </munder>
+          <mrow><mo>(</mo><mn>2</mn><mi>x</mi><mo>+</mo><mi>h</mi><mo>)</mo></mrow>
+        </mrow>
+      </math>
+    </li>
+    <li>
+      Take the limit as
+      <math display="inline"><mi>h</mi><mo>→</mo><mn>0</mn></math>:
+      <math display="block">
+        <mrow>
+          <mi>f</mi><mo>'</mo><mo>(</mo><mi>x</mi><mo>)</mo>
+          <mo>=</mo>
+          <mn>2</mn><mi>x</mi>
+        </mrow>
+      </math>
+    </li>
+    <li>
+      At <math display="inline"><mi>x</mi><mo>=</mo><mn>1</mn></math>, the derivative is
+      <math display="inline"><mi>f</mi><mo>'</mo><mo>(</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>2</mn><mo>×</mo><mn>1</mn><mo>=</mo><mn>2</mn></math>. This means the instantaneous rate of change at that point is 2.
+    </li>
+  </ol>
+
+  <h2>Real-World Applications</h2>
+  <p>Derivatives are used in various fields:</p>
+  <ul>
+    <li>
+      <strong>Physics</strong>: Velocity is the derivative of position with
+      respect to time. Acceleration is the derivative of velocity.
+    </li>
+    <li>
+      <strong>Economics</strong>: Marginal cost (the cost to produce one more
+      unit) is the derivative of the total cost function.
+    </li>
+    <li>
+      <strong>Biology</strong>: Population growth rates can be modeled with
+      derivatives.
+    </li>
+  </ul>
+  <p>
+    For instance, if a ball's height is given by
+    <math display="inline"><mi>h</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mo>−</mo><mn>5</mn><msup><mi>t</mi><mn>2</mn></msup><mo>+</mo><mn>20</mn><mi>t</mi></math>
+    (in meters), its velocity at any time
+    <math display="inline"><mi>t</mi></math> is
+    <math display="inline"><mi>v</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>h</mi><mo>'</mo><mo>(</mo><mi>t</mi><mo>)</mo><mo>=</mo><mo>−</mo><mn>10</mn><mi>t</mi><mo>+</mo><mn>20</mn></math>.
+  </p>
+
+  <h2>Common Misconceptions</h2>
+  <ul>
+    <li>
+      <strong>Derivative is not always positive</strong>: It can be negative
+      (indicating decrease) or zero (no change).
+    </li>
+    <li>
+      <strong>It's not just for curves</strong>: Even linear functions have
+      derivatives—their slope is constant.
+    </li>
+  </ul>
+
+  <hr>
+
+  <p>
+    In summary, the foundation of derivatives lies in understanding
+    instantaneous rates of change through limits. This concept is a building
+    block for more advanced topics in calculus, like integration. Practice with
+    simple functions to build intuition!
+  </p>
+
+  <p>
+    <em>For further reading, check out resources on
+      <a href="https://www.khanacademy.org/math/calculus-1" target="_blank">Khan Academy's calculus section</a>.</em>
+  </p>
+</div>

@@ -1,0 +1,84 @@
+<div>
+  <h2>Understanding Continuity in Functions</h2>
+  <p>In mathematics, particularly in calculus, <strong>continuity</strong> is a fundamental concept that describes how a function behaves without any sudden jumps, breaks, or holes in its graph. For a function to be continuous at a point, it must be "smooth" and connected at that point. This is crucial for analyzing real-world phenomena, like motion or growth, where abrupt changes are rare.</p>
+
+  <h3>What Does Continuity Mean?</h3>
+  <p>Imagine drawing the graph of a function without lifting your pencil from the paper. If you can do this over an interval, the function is continuous there. More formally, a function <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> is <strong>continuous at a point</strong> <math display="inline"><mi>x</mi><mo>=</mo><mi>c</mi></math> if three conditions are met:</p>
+  <ul>
+    <li>The function is defined at <math display="inline"><mi>x</mi><mo>=</mo><mi>c</mi></math>, meaning <math display="inline"><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math> exists.</li>
+    <li>The limit of the function as <math display="inline"><mi>x</mi></math> approaches <math display="inline"><mi>c</mi></math> exists. That is, <math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> is a finite number.</li>
+    <li>The limit equals the function value at <math display="inline"><mi>c</mi></math>: <math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math>.</li>
+  </ul>
+  <p>If any of these conditions fail, the function is <strong>discontinuous</strong> at that point.</p>
+
+  <h3>Formal Definition in Math Terms</h3>
+  <p>For a function <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> to be continuous at <math display="inline"><mi>x</mi><mo>=</mo><mi>c</mi></math>, we write:</p>
+  <math display="block">
+    <mrow>
+      <munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder>
+      <mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo>
+      <mo>=</mo>
+      <mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo>
+    </mrow>
+  </math>
+  <p>This means that as <math display="inline"><mi>x</mi></math> gets closer and closer to <math display="inline"><mi>c</mi></math>, the values of <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> approach <math display="inline"><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math>, and there are no gaps or jumps.</p>
+
+  <h3>Examples to Illustrate Continuity</h3>
+  <p>Let's look at some examples to make this clearer:</p>
+  <ul>
+    <li><strong>Example 1: Continuous Function</strong><br>
+      Consider <math display="inline"><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>. At <math display="inline"><mi>x</mi><mo>=</mo><mn>2</mn></math>:
+      <ul>
+        <li><math display="inline"><mi>f</mi><mo>(</mo><mn>2</mn><mo>)</mo><mo>=</mo><mn>4</mn></math> (defined).</li>
+        <li><math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mn>2</mn></mrow></munder><msup><mi>x</mi><mn>2</mn></msup><mo>=</mo><mn>4</mn></math> (limit exists).</li>
+        <li>Since <math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mn>2</mn></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>f</mi><mo>(</mo><mn>2</mn><mo>)</mo></math>, the function is continuous at <math display="inline"><mi>x</mi><mo>=</mo><mn>2</mn></math>.</li>
+      </ul>
+      This function is continuous for all real numbers because its graph is a smooth parabola.
+    </li>
+    <li><strong>Example 2: Discontinuous Function</strong><br>
+      Consider <math display="inline"><mi>g</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mfrac><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>x</mi><mo>−</mo><mn>1</mn></mrow></mfrac></math>. At <math display="inline"><mi>x</mi><mo>=</mo><mn>1</mn></math>:
+      <ul>
+        <li><math display="inline"><mi>g</mi><mo>(</mo><mn>1</mn><mo>)</mo></math> is undefined because it results in division by zero.</li>
+        <li>However, the limit exists: <math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mn>1</mn></mrow></munder><mfrac><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>x</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mo>=</mo><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mn>1</mn></mrow></munder><mo>(</mo><mi>x</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>2</mn></math>.</li>
+        <li>Since <math display="inline"><mi>g</mi><mo>(</mo><mn>1</mn><mo>)</mo></math> is not defined, the function is discontinuous at <math display="inline"><mi>x</mi><mo>=</mo><mn>1</mn></math>. This is called a <em>removable discontinuity</em> because we could "fill the hole" by defining <math display="inline"><mi>g</mi><mo>(</mo><mn>1</mn><mo>)</mo><mo>=</mo><mn>2</mn></math>.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>Analogy for Better Understanding</h3>
+  <p>Think of continuity like a smooth road trip: if you're driving along a road and there are no detours, potholes, or bridges out, you can travel seamlessly from one point to another. Similarly, a continuous function allows you to "travel" along its graph without any interruptions.</p>
+
+  <h3>Summary Table of Continuity Conditions</h3>
+  <table border="1" style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr>
+        <th>Condition</th>
+        <th>Description</th>
+        <th>What Happens If It Fails?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><math display="inline"><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math> is defined</td>
+        <td>The function has a value at <math display="inline"><mi>x</mi><mo>=</mo><mi>c</mi></math>.</td>
+        <td>Discontinuity (e.g., a hole or vertical asymptote).</td>
+      </tr>
+      <tr>
+        <td><math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo></math> exists</td>
+        <td>The function approaches a specific value as <math display="inline"><mi>x</mi></math> nears <math display="inline"><mi>c</mi></math>.</td>
+        <td>Jump or oscillation in the graph.</td>
+      </tr>
+      <tr>
+        <td><math display="inline"><munder><mo>lim</mo><mrow><mi>x</mi><mo>→</mo><mi>c</mi></mrow></munder><mi>f</mi><mo>(</mo><mi>x</mi><mo>)</mo><mo>=</mo><mi>f</mi><mo>(</mo><mi>c</mi><mo>)</mo></math></td>
+        <td>The limit matches the function value.</td>
+        <td>Discontinuity even if the limit exists (e.g., a point off the graph).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Why Is Continuity Important?</h3>
+  <p>Continuity is essential in calculus because it ensures that functions behave predictably, which is necessary for concepts like derivatives and integrals. For instance, if a function is continuous on an interval, we can apply the Intermediate Value Theorem, which states that it takes on every value between its minimum and maximum—useful for solving equations and modeling real-life scenarios.</p>
+
+  <hr>
+  <p><em>Note: In higher mathematics, continuity can be extended to more complex functions, but for grade 11, focusing on real-valued functions with simple discontinuities is sufficient. Practice with graphs and limits to strengthen your understanding!</em></p>
+</div>
