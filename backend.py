@@ -4,12 +4,13 @@ from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtWidgets import QApplication
 import sys, os
 import uuid
+from pathlib import Path
 from llm.llm import generate_article,generate_lecture ,generate_mindmap ,generate_flashcards
 from llm.llm_helper import create_audio ,create_mindmap
 from filemanager import create_note , link_notes ,save_meta
-
+# import debugpy
 app = QApplication(sys.argv)
-
+# debugpy.debug_this_thread() 
 view = QWebEngineView()
 channel = QWebChannel()
 DB_PATH = "database/notes.db"
@@ -28,9 +29,12 @@ class Backend(QObject):
         
 
     @pyqtSlot(str,str,str, str,result= str)
-    def createpage(self,selection,content,level = "grade 11",parent_id="root") :
+    def createpage(self,selection,content,level = "grade 11",parent_id="root/root") :
         """Create a new empty page file and return its safe filename."""
         note_id =uuid.uuid4().hex
+        path = Path(parent_id)
+        print(list(path.parts))
+        parent_id = list(path.parts)[-2]
         filename = f"{note_id}.html"
         path = os.path.abspath(NOTES_DIR)
         # article = generate_article(selection,content, level)

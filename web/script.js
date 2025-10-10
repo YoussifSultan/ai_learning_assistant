@@ -45,7 +45,7 @@ async function create_page() {
       selection.toString().trim()
     ),
     "grade 11",
-    historyPages.length == 1 ? "root" : historyPages.at(-1)
+    historyPages.length == 1 ? "root/root" : historyPages.at(-1)
   );
 
   loader.hide();

@@ -71,6 +71,7 @@ def link_notes(parent_id, child_id):
 
 def load_meta(note_id) ->metadata:
     path = os.path.join(NOTES_DIR, note_id, "meta.json")
+    path = path.replace("\\", "/")
     with open(path, "r", encoding="utf-8") as f:
         return metadata.model_validate_json(f.read())
 
