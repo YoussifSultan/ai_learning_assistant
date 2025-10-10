@@ -52,12 +52,12 @@ class Backend(QObject):
     
     @pyqtSlot(str,int,result=str)
     def create_flashcards(self,article,NOflashcards):
-        # flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
-        # json_str = flashcards.model_dump_json()
-        # flashcard_location = f"assets/flashcards/{uuid.uuid4()}.json"
-        # with open(flashcard_location, "w", encoding="utf-8") as f:
-        #     f.write(json_str)  
-        return  "assets/flashcards/6f5c2db4-2f7a-403c-9ce6-72a10c62c243.json"
+        flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
+        json_str = flashcards.model_dump_json()
+        flashcard_location = f"assets/flashcards/{uuid.uuid4()}.json"
+        with open(flashcard_location, "w", encoding="utf-8") as f:
+            f.write(json_str)  
+        return  flashcard_location
     
 
     @pyqtSlot(str, result=str)

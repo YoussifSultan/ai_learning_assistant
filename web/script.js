@@ -101,7 +101,7 @@ function goBack() {
     .then((html) => (document.getElementById("editor").innerHTML = html));
   loadpage();
 }
-function loadpage() {
+async function loadpage() {
   //init
   const lecture_player = document.getElementById("lecture_player");
   const flashcard_viewer = document.getElementById("flashcard_viewer");
@@ -113,16 +113,23 @@ function loadpage() {
   mindmap_viewer.src = "";
 
   // load lecture
-  const lecture_div = document.getElementById("lecture_location");
-  lecture_player.src = lecture_div.dataset.lectureLocation;
+  lecture_div = document.getElementById("lecture_location");
+  if (lecture_div) {
+    lecture_player.src = lecture_div.dataset.lectureLocation;
+  }
   // load mindmap
-  const mindmap_div = document.getElementById("mindmap_location");
-  mindmap_viewer.src = mindmap_div.dataset.mindmapLocation;
+  mindmap_div = document.getElementById("mindmap_location");
+  if (mindmap_div) {
+    mindmap_viewer.src = mindmap_div.dataset.mindmapLocation;
+  }
   // load flashcards
-  const flashcard_div = document.getElementById("flashcard_location");
-  flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
-    flashcard_div.dataset.flashcardLocation
-  )} `;
+  flashcard_div = document.getElementById("flashcard_location");
+  if (flashcard_div) {
+    flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
+      flashcard_div.dataset.flashcardLocation
+    )} `;
+  }
+
   console.warn("script", flashcard_div.dataset.flashcardLocation);
 }
 async function create_lecture() {
@@ -237,7 +244,7 @@ function LoadingBox(message = "Loading...") {
   };
 }
 
-const observer = new MutationObserver(async () => {
+const observer = new MutationObserver(() => {
   const lecture_div = document.getElementById("lecture_location");
   if (lecture_div) {
     console.warn("run");
@@ -246,6 +253,3 @@ const observer = new MutationObserver(async () => {
 });
 
 observer.observe(editor, { childList: true, subtree: true });
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}

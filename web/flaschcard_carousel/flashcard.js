@@ -8,30 +8,12 @@ async function loadflashcards() {
   flashcards = [
     {
       id: "card1",
-      front: "What is photosynthesis?",
-      back: "Photosynthesis is the process by which green plants use sunlight to synthesize foods from carbon dioxide and water.",
-      hint: "It uses sunlight",
+      front: "Do you want to Add flashcards to test your knowledge",
+      back: "Click on the create button and then on the flashcards",
+      hint: "look in the top left",
       hintDetails: "Occurs in chloroplasts",
-      type: "Definition",
-      difficulty: 2,
-    },
-    {
-      id: "card2",
-      front: "What is Newton’s Second Law?",
-      back: "Force equals mass times acceleration (F = ma).",
-      hint: "Think F = ?",
-      hintDetails: "Force and acceleration are directly proportional.",
-      type: "Application",
-      difficulty: 4,
-    },
-    {
-      id: "card3",
-      front: "Define DNA.",
-      back: "DNA carries genetic instructions for the development and functioning of living organisms.",
-      hint: "It’s a molecule of heredity",
-      hintDetails: "Composed of nucleotides forming a double helix.",
-      type: "Definition",
-      difficulty: 3,
+      type: "Init",
+      difficulty: 1,
     },
   ];
   console.warn("flashcard ", flashcardslocation);
