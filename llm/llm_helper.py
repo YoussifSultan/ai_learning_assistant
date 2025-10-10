@@ -14,7 +14,7 @@ def create_mindmap(nodes , edges) -> str:
     net = Network(notebook=True, height="750px", width="100%", directed=True,cdn_resources="in_line")
     net.from_nx(G)
     net.force_atlas_2based()
-    filelocation = f"assets/mindmaps/{uuid.uuid4()}.html"
+    filelocation = f"assets/mindmaps/{uuid.uuid4().hex}.html"
     html = net.generate_html(filelocation,notebook=False,local=True)
     with open(filelocation, "w", encoding="utf-8") as f:
         f.write(html)

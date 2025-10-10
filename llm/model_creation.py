@@ -28,11 +28,11 @@ class Mindmap(BaseModel):
 mindmap_model = reasoner_model.with_structured_output(Mindmap)
 
 class Flashcard(BaseModel):
-       front : str = Field(default_factory=list,description="Front of the flashcard")
-       back : str = Field(default_factory=list,description="Back of the flashcard")
-       hint : str = Field(default_factory=list,description = "Hint of the flashcard")
-       type : str = Field(default_factory=list,description = "Type of the flashcard")
-       difficulty : int = Field(default_factory=list,description = "Difficulty of the flashcard")
+       front : str = Field(description="Front of the flashcard")
+       back : str = Field(description="Back of the flashcard")
+       hint : str = Field(description = "Hint of the flashcard")
+       type : str = Field(description = "Type of the flashcard")
+       difficulty : int = Field(description = "Difficulty of the flashcard")
        
 class FlashcardSet(BaseModel):
        flashcards : list[Flashcard] = Field(default_factory=list,description="List of flashcards")

@@ -6,37 +6,40 @@ import sys, os
 import uuid
 from llm.llm import generate_article,generate_lecture ,generate_mindmap ,generate_flashcards
 from llm.llm_helper import create_audio ,create_mindmap
-
+from filemanager import create_note , link_notes ,save_meta
 
 app = QApplication(sys.argv)
 
 view = QWebEngineView()
 channel = QWebChannel()
-
+DB_PATH = "database/notes.db"
+NOTES_DIR = "Knowbases/base1"
 class Backend(QObject):
     def __init__(self):
         super().__init__()
 
     @pyqtSlot(str,str)
-    def save_content(self, pageName,content):
+    def save_content(self, pageLocation:str,content):
         """Called from JS (Ctrl+S). Always return a value."""
-        with open(f"pages/{pageName}", "w", encoding="utf-8") as f:
+        pageLocation= pageLocation.replace("../","")
+        with open(pageLocation, "w", encoding="utf-8") as f:
             f.write(content)
+        # save_meta()
         
 
-    @pyqtSlot(str,str,str, result= str)
-    def createpage(self,selection,content,level = "grade 11") :
+    @pyqtSlot(str,str,str, str,result= str)
+    def createpage(self,selection,content,level = "grade 11",parent_id="root") :
         """Create a new empty page file and return its safe filename."""
-        filename = f"{uuid.uuid4().hex}.html"
-        path = os.path.abspath(f"pages/{filename}")
-        print(selection,content, level)
-        article = generate_article(selection,content, level)
-        # create an empty HTML file (or use a template)
+        note_id =uuid.uuid4().hex
+        filename = f"{note_id}.html"
+        path = os.path.abspath(NOTES_DIR)
+        # article = generate_article(selection,content, level)
+        create_note(str(note_id),selection,str(parent_id))
+        link_notes(parent_id,note_id)
+        path = os.path.join(path,note_id,filename)
         with open(path, "w", encoding="utf-8") as l:
-     
-            l.write(f'{article}')
-        # Return a JSON-serializable object (pywebview will convert)
-        return filename
+            l.write('dsfknasdj sdfjndsj fsdjfnsdjn')
+        return f"../{NOTES_DIR}/{note_id}/{filename}"
     
     @pyqtSlot(str,result=str)
     def create_lecture(self,article):
@@ -54,7 +57,7 @@ class Backend(QObject):
     def create_flashcards(self,article,NOflashcards):
         flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
         json_str = flashcards.model_dump_json()
-        flashcard_location = f"assets/flashcards/{uuid.uuid4()}.json"
+        flashcard_location = f"assets/flashcards/{uuid.uuid4().hex}.json"
         with open(flashcard_location, "w", encoding="utf-8") as f:
             f.write(json_str)  
         return  flashcard_location

@@ -1,6 +1,6 @@
 let backend; // this will represent Python
 let historyPages = [];
-
+DB_PATH = "database/notes.db";
 // connect to Python side
 new QWebChannel(qt.webChannelTransport, function (channel) {
   backend = channel.objects.backend;
@@ -30,7 +30,6 @@ function saveContent() {
 async function create_page() {
   const selection = window.getSelection();
   if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
-    console.warn("No selection");
     return;
   }
   const range = selection.getRangeAt(0);
@@ -45,7 +44,8 @@ async function create_page() {
       extractTextFromHTML(content),
       selection.toString().trim()
     ),
-    "grade 11"
+    "grade 11",
+    historyPages.length == 1 ? "root" : historyPages.at(-1)
   );
 
   loader.hide();
@@ -79,7 +79,7 @@ async function create_page() {
   menu.style.display = "none";
 }
 
-async function showPage(page, e, isloading = false) {
+async function showPage(page_location, e, isloading = false) {
   if (e) {
     e.preventDefault();
   }
@@ -87,8 +87,8 @@ async function showPage(page, e, isloading = false) {
   if (!isloading) {
     saveContent();
   }
-  historyPages.push(page);
-  fetch("../pages/" + page)
+  historyPages.push(page_location);
+  fetch(page_location)
     .then((res) => res.text())
     .then((html) => (document.getElementById("editor").innerHTML = html));
   loadpage();
@@ -129,8 +129,6 @@ async function loadpage() {
       flashcard_div.dataset.flashcardLocation
     )} `;
   }
-
-  console.warn("script", flashcard_div.dataset.flashcardLocation);
 }
 async function create_lecture() {
   const content = editor.innerHTML;
@@ -247,7 +245,6 @@ function LoadingBox(message = "Loading...") {
 const observer = new MutationObserver(() => {
   const lecture_div = document.getElementById("lecture_location");
   if (lecture_div) {
-    console.warn("run");
     loadpage(); // ✅ element appeared — safe to run
   }
 });

@@ -16,7 +16,6 @@ async function loadflashcards() {
       difficulty: 1,
     },
   ];
-  console.warn("flashcard ", flashcardslocation);
   if (flashcardslocation != null) {
     await fetch(flashcardslocation)
       .then((response) => response.json())
