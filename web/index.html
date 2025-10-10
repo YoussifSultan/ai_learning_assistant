@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>Editor with Sidebar</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- <link rel="stylesheet" href="flashcard.css" /> -->
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
   </head>
   <body onload="showPage('TEST_saved.html',event,true)">
@@ -15,7 +16,7 @@
           <a href="#" onclick="create_mindmap()">Mindmap</a>
           <a href="#" onclick="create_lecture()">Lecture</a>
           <a href="#" onclick="createFlowchart()">Flowchart</a>
-          <a href="#" onclick="createFlashcards()">Flashcards</a>
+          <a href="#" onclick="create_flashcards()">Flashcards</a>
         </div>
       </div>
     </nav>
@@ -28,19 +29,22 @@
       <section id="mindmap-section">
         <h2>Mindmap</h2>
         <iframe
+          id="mindmap_viewer"
           src="../pages/TEST_saved.html"
           width="100%"
           height="500px"
           style="border: 1px solid #ccc; border-radius: 8px"
         ></iframe>
       </section>
-      <h2>Lecture Player</h2>
-      <div>
-        <audio controls id="lecture_player">
-          <source src="../assets/audio/final_lecture.mp3" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      </div>
+      <section id="lecture_player">
+        <h2>Lecture Player</h2>
+        <div>
+          <audio controls id="lecture_player">
+            <source src="../assets/audio/final_lecture.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      </section>
       <div id="menu">
         <button onclick="copyText()">📋</button>
         <button onclick="create_page()">Expand</button>
@@ -53,8 +57,12 @@
         contenteditable="true"
       ></article>
       <button onclick="goBack()">< Back</button>
+      <iframe
+        id="flashcard_viewer"
+        src="flaschcard_carousel/flashcard.html"
+      ></iframe>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" scrolling="no" tabindex="0"></script>
   </body>
 </html>

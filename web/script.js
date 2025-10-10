@@ -102,10 +102,28 @@ function goBack() {
   loadpage();
 }
 function loadpage() {
+  //init
+  const lecture_player = document.getElementById("lecture_player");
+  const flashcard_viewer = document.getElementById("flashcard_viewer");
+  const mindmap_viewer = document.getElementById("mindmap_viewer");
+
+  //reset
+  lecture_player.src = "";
+  flashcard_viewer.src = "flaschcard_carousel/flashcard.html";
+  mindmap_viewer.src = "";
+
   // load lecture
   const lecture_div = document.getElementById("lecture_location");
-  const lecture_player = document.getElementById("lecture_player");
   lecture_player.src = lecture_div.dataset.lectureLocation;
+  // load mindmap
+  const mindmap_div = document.getElementById("mindmap_location");
+  mindmap_viewer.src = mindmap_div.dataset.mindmapLocation;
+  // load flashcards
+  const flashcard_div = document.getElementById("flashcard_location");
+  flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
+    flashcard_div.dataset.flashcardLocation
+  )} `;
+  console.warn("script", flashcard_div.dataset.flashcardLocation);
 }
 async function create_lecture() {
   const content = editor.innerHTML;
@@ -126,7 +144,6 @@ async function create_lecture() {
     '" ></div>';
   saveContent();
   // move caret after inserted wrapper
-  selection.removeAllRanges();
 }
 function extractTextFromHTML(htmlString) {
   const parser = new DOMParser();
@@ -156,6 +173,48 @@ function getContextAroundSelection(text, selection, range = 10) {
 
 async function create_mindmap() {
   const content = editor.innerHTML;
+  const loader = LoadingBox("Fetching data...");
+  loader.show();
+  mindmap_filelocation = await backend.create_mindmap(content);
+  loader.hide();
+  // build the link and attach the filename as data attribute
+  const mindmap_viewer = document.getElementById("mindmap_viewer");
+  mindmap_filelocation = "../" + mindmap_filelocation;
+  mindmap_viewer.src = mindmap_filelocation;
+  editor.innerHTML =
+    editor.innerHTML +
+    '<div id="mindmap_location" data-mindmap-location="' +
+    mindmap_filelocation +
+    '" ></div>';
+  saveContent();
+}
+
+async function create_flashcards() {
+  const content = editor.innerHTML;
+  NOflashcards = prompt("Enter the desired Number of flashcards:");
+  while (NOflashcards == null || NOflashcards > 10) {
+    NOflashcards = prompt("Enter the desired Number of flashcards:");
+  }
+  const loader = LoadingBox("Fetching data...");
+  loader.show();
+  flashcards_filelocation = await backend.create_flashcards(
+    content,
+    NOflashcards
+  );
+  loader.hide();
+  // build the link and attach the filename as data attribute
+  const flashcard_viewer = document.getElementById("flashcard_viewer");
+  flashcards_filelocation = "../" + flashcards_filelocation;
+
+  flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcards=${encodeURIComponent(
+    flashcards_filelocation
+  )} `;
+  editor.innerHTML =
+    editor.innerHTML +
+    '<div id="flashcard_location" data-flashcard-location="' +
+    flashcards_filelocation +
+    '" ></div>';
+  saveContent();
 }
 
 function LoadingBox(message = "Loading...") {
@@ -178,11 +237,15 @@ function LoadingBox(message = "Loading...") {
   };
 }
 
-const observer = new MutationObserver(() => {
+const observer = new MutationObserver(async () => {
   const lecture_div = document.getElementById("lecture_location");
   if (lecture_div) {
+    console.warn("run");
     loadpage(); // ✅ element appeared — safe to run
   }
 });
 
 observer.observe(editor, { childList: true, subtree: true });
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

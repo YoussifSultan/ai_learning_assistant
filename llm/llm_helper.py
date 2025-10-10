@@ -1,22 +1,24 @@
 import os
 import uuid
+import networkx as nx
+import matplotlib.pyplot as plt
+from pyvis.network import Network
 
 def create_mindmap(nodes , edges) -> str:
-    import networkx as nx
-    import matplotlib.pyplot as plt
-
     nodes = nodes
     edges = edges
     G = nx.DiGraph() 
     G.add_nodes_from(nodes)
     G.add_edges_from(edges)
     # Build a NetworkX graph
-    from pyvis.network import Network
     net = Network(notebook=True, height="750px", width="100%", directed=True,cdn_resources="in_line")
     net.from_nx(G)
     net.force_atlas_2based()
-    # Save & show
-    net.show("biology_mindmap.html")
+    filelocation = f"assets/mindmaps/{uuid.uuid4()}.html"
+    html = net.generate_html(filelocation,notebook=False,local=True)
+    with open(filelocation, "w", encoding="utf-8") as f:
+        f.write(html)
+    return filelocation
 
 
 def create_diagram( nodes, edges) -> str:

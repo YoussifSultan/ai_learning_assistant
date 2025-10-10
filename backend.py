@@ -1,11 +1,11 @@
-from PyQt6.QtCore import QObject, pyqtSlot, QUrl
-from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtCore import QObject, pyqtSlot, QUrl ,Qt
+from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtWidgets import QApplication
 import sys, os
 import uuid
-from llm.llm import generate_article,generate_lecture
-from llm.llm_helper import create_audio
+from llm.llm import generate_article,generate_lecture ,generate_mindmap ,generate_flashcards
+from llm.llm_helper import create_audio ,create_mindmap
 
 
 app = QApplication(sys.argv)
@@ -44,17 +44,36 @@ class Backend(QObject):
         lecture_filelocation = create_audio(lecture)
         return lecture_filelocation
     
+    @pyqtSlot(str,result=str)
+    def create_mindmap(self,article):
+        nodes,edges =generate_mindmap(article)
+        mindmap_filelocation = create_mindmap(nodes=nodes,edges=edges)
+        return mindmap_filelocation
+    
+    @pyqtSlot(str,int,result=str)
+    def create_flashcards(self,article,NOflashcards):
+        # flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
+        # json_str = flashcards.model_dump_json()
+        # flashcard_location = f"assets/flashcards/{uuid.uuid4()}.json"
+        # with open(flashcard_location, "w", encoding="utf-8") as f:
+        #     f.write(json_str)  
+        return  "assets/flashcards/6f5c2db4-2f7a-403c-9ce6-72a10c62c243.json"
+    
 
     @pyqtSlot(str, result=str)
     def print(self, problem):
         print(problem)
+
+
+
 backend = Backend()
 channel.registerObject("backend", backend)
 view.page().setWebChannel(channel)
 
 file_path = os.path.abspath("web/index.html")
 view.load(QUrl.fromLocalFile(file_path))
-view.showMaximized()   # ✅ Maximizes the window
+view.showMaximized()   
 
 view.show()
+
 sys.exit(app.exec())

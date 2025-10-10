@@ -1,0 +1,224 @@
+/* flashcard-gallery.css */
+
+/* Reset & base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  overflow: hidden; /* completely disable scrolling */
+}
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: #ffffff; /* White background */
+  color: #1a1a1a; /* Dark text */
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+.gallery {
+  display: flex;
+  scroll-behavior: smooth;         /* smooth movement */
+  scroll-snap-type: x mandatory;   /* snap to each card */
+  flex-wrap: nowrap;              /* stay in one row */
+  overflow-x: auto;               /* enable horizontal scroll if needed */
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  scroll-behavior: smooth;        /* smooth scrolling */
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hide scrollbar (cross-browser) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.gallery::-webkit-scrollbar {
+  height: none;                    /* thinner scrollbar */
+}
+.gallery::-webkit-scrollbar-thumb {
+  background: rgba(125, 211, 252, 0.3);
+  border-radius: 4px;
+}
+.gallery::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Card wrapper */
+.card-wrap {
+    flex: 0 0 500px;                 /* fixed width per card */
+  scroll-snap-align: center;       /* center on snap */
+
+  perspective: 1000px;
+  position: relative;
+}
+
+.card-toggle {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Card container */
+.card {
+  display: block;
+  width: 700px;
+  height: 320px; /* slightly taller to keep proportions */
+  border-radius: 16px; /* a bit smoother with larger size */
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  cursor: pointer;
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 1rem;
+  backface-visibility: hidden;
+  background: linear-gradient(180deg, #0f1724, #071126);
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.card-front {
+  transform: rotateY(0deg);
+}
+.card-back {
+  transform: rotateY(180deg);
+}
+.card-wrap.active {
+  transform: scale(1.00);
+  opacity: 1;
+}
+
+.card-wrap:not(.active) {
+  transform: scale(0.90);
+  opacity: 0.7;
+}
+
+
+/* Flip animation */
+.card-toggle:checked + .card {
+  transform: rotateY(180deg);
+}
+
+/* Header, body, footer */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  background: rgba(125,211,252,0.1);
+  border: 1px solid rgba(125,211,252,0.3);
+  color: #7dd3fc;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.difficulty {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 0.25rem;
+}
+
+.difficulty::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #7dd3fc calc(var(--fill, 0%) * 1%), rgba(255,255,255,0.08) 0%);
+}
+
+/* dynamic difficulty fill */
+.difficulty[data-difficulty="1"] { --fill: 20; }
+.difficulty[data-difficulty="2"] { --fill: 40; }
+.difficulty[data-difficulty="3"] { --fill: 60; }
+.difficulty[data-difficulty="4"] { --fill: 80; }
+.difficulty[data-difficulty="5"] { --fill: 100; }
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.card-question {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.card-answer {
+  font-size: 1rem;
+  color: #cdeaff;
+}
+
+.meta, .hint-preview {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
+}
+
+/* Hint */
+details.hint {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+}
+details.hint summary {
+  cursor: pointer;
+  list-style: none;
+  color: #7dd3fc;
+}
+details.hint[open] {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover lift */
+.card:hover {
+  transform: translateY(-6px) rotateY(var(--rot, 0deg));
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+.card-toggle:checked + .card:hover {
+  --rot: 180deg;
+}
+
+/* Responsive tweak */
+@media (max-width: 600px) {
+  .card {
+    height: 260px;
+  }
+}

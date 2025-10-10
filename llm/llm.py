@@ -1,4 +1,5 @@
-from llm.model_creation import reasoner_model, create_prompt, mindmap_model
+from llm.model_creation import reasoner_model, create_prompt, mindmap_model , flashcard_model
+from pydantic import Field, BaseModel
 
 def generate_article(word,context,education_level) ->str:
     generate_article_prompt = create_prompt(system_prompt="You are an AI Teacher which provides an in-detailed explanation of the scietific topic" ,
@@ -36,11 +37,8 @@ You are a scientific tutor.
     article =  generate_article_chain.invoke({"word":word , "context":context , "education_level":education_level})
     return article.content
 
-
-
-
 # Return file path of an HTML file
-def generate_mindmap(article) :
+def generate_mindmap(article) ->tuple:
     mindmap_prompt= create_prompt(system_prompt="You are an AI assistant that creates mindmaps from scientific articles",
                   user_prompt="""
         Input:
@@ -62,9 +60,7 @@ def generate_mindmap(article) :
       "edges" : lambda x:x.edges,
        })
     mindmap_data =mindmap_chain.invoke({"article":article})
-    return mindmap_data.nodes , mindmap_data.edges
-
-
+    return mindmap_data["nodes"] , mindmap_data["edges"]
 
 def generate_lecture(article, education_level):
     lecture_prompt = create_prompt(system_prompt="""You are an expert educator and lecturer.  
@@ -96,6 +92,44 @@ Student Education Level: {education_level}"""
     | reasoner_model)
     lecture = lecture_chain.invoke({
     "article" :article,
-    "education_level" : "Beginner",
+    "education_level" : education_level,
 }).content
     return lecture
+
+def generate_flashcards(article , NOFlashcards):
+    flashcard_prompt = create_prompt(system_prompt="""
+    You are an expert AI tutor that generates flashcards from scientific articles.
+
+- Create a list of flashcards that helps a student understand this article.
+each flashcard should be in the following format:
+{{
+  "front": "Front of the flashcard (the question or prompt)",
+  "back": "Back of the flashcard (the correct answer or explanation)",
+  "hint": "A small clue to help recall",
+  "type": "One of: Definition | Concept | Example | Multiple-choice | Fill-in-the-blank | True/False | Application",
+  "difficulty": "Integer from 1 (easy) to 5 (very hard)"
+}}
+    Guidelines:
+- Use clear and precise scientific language.
+- Vary the **type** of flashcards
+- Adapt difficulty based on the complexity of the concept (basic terms = 1–2, abstract theories = 4–5).
+- Make sure flashcards are concise but accurate.
+- Avoid repeating the same style of question.
+""",
+user_prompt="""
+---
+{article}
+
+---
+Number of flashcards : {numberOfFlashcards}
+
+""" ,input_variables=["article","numberOfFlashcards"])
+    flashcards_chain =(
+    {"article" : lambda x:x["article"],
+     "numberOfFlashcards" : lambda x:x["numberOfFlashcards"]}
+    | flashcard_prompt
+    | flashcard_model
+
+)
+    return flashcards_chain.invoke({"article" : article , "numberOfFlashcards" : NOFlashcards})
+    
