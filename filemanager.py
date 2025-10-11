@@ -7,9 +7,9 @@ from datetime import datetime
 DB_PATH = "database/notes.db"
 NOTES_DIR = "Knowbases/base1/"
 class Assetlocation(BaseModel):
-    lecture_location : str = Field(description="lecture file location")
-    flashcards_location : str = Field(description="flashcards file location")
-    mindmap_location : str = Field(description="mindmap file location")
+    lecture_location : str = Field(description="lecture file location",default="")
+    flashcards_location : str = Field(description="flashcards file location",default="")
+    mindmap_location : str = Field(description="mindmap file location",default="")
 class metadata(BaseModel):
     id : str  = Field(description="note id")
     parent_id : str = Field(description= "parent ID")
@@ -68,7 +68,6 @@ def link_notes(parent_id, child_id):
     save_meta(parent_id, parent_meta)
     save_meta(child_id, child_meta)
 
-
 def load_meta(note_id) ->metadata:
     path = os.path.join(NOTES_DIR, note_id, "meta.json")
     path = path.replace("\\", "/")
@@ -77,6 +76,7 @@ def load_meta(note_id) ->metadata:
 
 def save_meta(note_id,  meta : metadata):
     path = os.path.join(NOTES_DIR, note_id, "meta.json")
+    path = path.replace("\\", "/")
     meta.update_At = now()
     with open(path, "w", encoding="utf-8") as f:
         f.write(meta.model_dump_json(indent= 2))

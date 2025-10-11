@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AI Learning Assistant</title>
+    <link rel="stylesheet" href="style1.css" />
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  </head>
+
+  <body onload="showPage('root', event, true)">
+    <!-- 🔹 SIDEBAR -->
+    <aside class="sidebar">
+      <h2>🧠 Knowledge Hub</h2>
+      <nav class="menu">
+        <div class="menu-section">Navigation</div>
+        <div class="menu-item" onclick="goBack()"><i>⬅</i> Back</div>
+        <div class="menu-item" onclick="saveContent()">💾 Save</div>
+
+        <div class="menu-section">Create</div>
+        <div class="menu-item" onclick="create_mindmap()">🕸 Mindmap</div>
+        <div class="menu-item" onclick="create_lecture()">🎧 Lecture</div>
+        <div class="menu-item" onclick="createFlowchart()">🧩 Flowchart</div>
+        <div class="menu-item" onclick="create_flashcards()">🃏 Flashcards</div>
+      </nav>
+    </aside>
+
+    <!-- 🔹 MAIN CONTENT -->
+    <main class="main">
+      <div id="menu">
+        <button onclick="copyText()">📋</button>
+        <button onclick="create_page()">Expand</button>
+      </div>
+
+      <section id="lecture_player" class="panel">
+        <h2>Lecture Player</h2>
+        <audio controls id="lecture_audio">
+          <source src="" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </section>
+
+      <section id="mindmap-section" class="panel">
+        <h2>Mindmap</h2>
+        <iframe
+          id="mindmap_viewer"
+          src="../pages/TEST_saved.html"
+          width="100%"
+          height="500px"
+          style="border: 1px solid #ccc; border-radius: 12px"
+        ></iframe>
+      </section>
+
+      <section id="editor-section" class="panel">
+        <h2>Editor</h2>
+        <article
+          class="markdown-term"
+          id="editor"
+          contenteditable="true"
+        ></article>
+      </section>
+
+      <section id="flashcards-section" class="panel">
+        <h2>Flashcards</h2>
+        <iframe
+          id="flashcard_viewer"
+          src="flaschcard_carousel/flashcard.html"
+        ></iframe>
+      </section>
+    </main>
+
+    <script src="script.js" scrolling="no" tabindex="0"></script>
+  </body>
+</html>

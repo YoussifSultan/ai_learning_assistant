@@ -1,6 +1,6 @@
 let backend; // this will represent Python
 let historyPages = [];
-DB_PATH = "database/notes.db";
+const NOTES_DIR = "../Knowbases/base1";
 // connect to Python side
 new QWebChannel(qt.webChannelTransport, function (channel) {
   backend = channel.objects.backend;
@@ -38,14 +38,15 @@ async function create_page() {
   const content = editor.innerHTML;
   const loader = LoadingBox("Fetching data...");
   loader.show();
-  const pagename = await backend.createpage(
+  current_page = historyPages.at(-1);
+  const noteID = await backend.createpage(
     selection.toString(),
     getContextAroundSelection(
       extractTextFromHTML(content),
       selection.toString().trim()
     ),
-    "grade 11",
-    historyPages.length == 1 ? "root/root" : historyPages.at(-1)
+    current_page,
+    "grade 11"
   );
 
   loader.hide();
@@ -54,7 +55,7 @@ async function create_page() {
   const link = document.createElement("a");
   link.href = "#";
   // link.onclick = (e) => showPage(pagename, e);
-  link.setAttribute("onclick", "showPage('" + pagename + "',event)");
+  link.setAttribute("onclick", "showPage('" + noteID + "',event)");
 
   link.draggable = false; // prevent accidental drags
 
@@ -79,7 +80,7 @@ async function create_page() {
   menu.style.display = "none";
 }
 
-async function showPage(page_location, e, isloading = false) {
+async function showPage(noteID, e, isloading = false) {
   if (e) {
     e.preventDefault();
   }
@@ -87,67 +88,64 @@ async function showPage(page_location, e, isloading = false) {
   if (!isloading) {
     saveContent();
   }
-  historyPages.push(page_location);
-  fetch(page_location)
+  historyPages.push(noteID);
+
+  fetch(NOTES_DIR + "/" + noteID + "/" + noteID + ".html")
     .then((res) => res.text())
     .then((html) => (document.getElementById("editor").innerHTML = html));
   loadpage();
 }
 function goBack() {
   saveContent();
+  if (historyPages.length == 1) {
+    alert("No more history");
+    return;
+  }
   historyPages.pop();
-  fetch("../pages/" + historyPages.at(-1))
+  noteID = historyPages.at(-1);
+
+  fetch(NOTES_DIR + "/" + noteID + "/" + noteID + ".html")
     .then((res) => res.text())
     .then((html) => (document.getElementById("editor").innerHTML = html));
   loadpage();
 }
 async function loadpage() {
+  current_page = historyPages.at(-1);
+  assets_locations = {};
+  await fetch(NOTES_DIR + "/" + current_page + "/meta.json")
+    .then((response) => response.json())
+    .then((data) => {
+      assets_locations = data["assets_location"];
+      console.warn(assets_locations.lecture_location);
+    })
+    .catch((error) => console.error("Error loading JSON:", error));
   //init
   const lecture_player = document.getElementById("lecture_player");
   const flashcard_viewer = document.getElementById("flashcard_viewer");
   const mindmap_viewer = document.getElementById("mindmap_viewer");
 
-  //reset
-  lecture_player.src = "";
-  flashcard_viewer.src = "flaschcard_carousel/flashcard.html";
-  mindmap_viewer.src = "";
-
   // load lecture
-  lecture_div = document.getElementById("lecture_location");
-  if (lecture_div) {
-    lecture_player.src = lecture_div.dataset.lectureLocation;
-  }
+  lecture_player.src = assets_locations.lecture_location;
   // load mindmap
-  mindmap_div = document.getElementById("mindmap_location");
-  if (mindmap_div) {
-    mindmap_viewer.src = mindmap_div.dataset.mindmapLocation;
-  }
+  mindmap_viewer.src = assets_locations.mindmap_location;
   // load flashcards
-  flashcard_div = document.getElementById("flashcard_location");
-  if (flashcard_div) {
-    flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
-      flashcard_div.dataset.flashcardLocation
-    )} `;
-  }
+  flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
+    assets_locations.flashcards_location
+  )} `;
 }
 async function create_lecture() {
   const content = editor.innerHTML;
 
   const loader = LoadingBox("Fetching data...");
   loader.show();
-  lecture_filelocation = await backend.create_lecture(content);
+  current_page = historyPages.at(-1);
+  lecture_filelocation = await backend.create_lecture(content, current_page);
   loader.hide();
   // build the link and attach the filename as data attribute
   const lecture_player = document.getElementById("lecture_player");
   lecture_filelocation = "../" + lecture_filelocation;
   lecture_player.src = lecture_filelocation;
   lecture_player.play(); // optional — plays automatically
-  editor.innerHTML =
-    editor.innerHTML +
-    '<div id="lecture_location" data-lecture-location="' +
-    lecture_filelocation +
-    '" ></div>';
-  saveContent();
   // move caret after inserted wrapper
 }
 function extractTextFromHTML(htmlString) {
@@ -243,10 +241,26 @@ function LoadingBox(message = "Loading...") {
 }
 
 const observer = new MutationObserver(() => {
-  const lecture_div = document.getElementById("lecture_location");
-  if (lecture_div) {
-    loadpage(); // ✅ element appeared — safe to run
-  }
+  loadpage(); // ✅ element appeared — safe to run
 });
 
 observer.observe(editor, { childList: true, subtree: true });
+document.addEventListener("keydown", function (event) {
+  // Check if Alt is pressed AND the left arrow key
+  if (event.ctrlKey && event.key === "ArrowLeft") {
+    event.preventDefault(); // prevent default browser behavior (like going back)
+    goBack();
+  }
+});
+document.addEventListener("keydown", function (event) {
+  if (event.ctrlKey && event.key === "s") {
+    event.preventDefault();
+    saveContent();
+  }
+});
+document.addEventListener("keydown", function (event) {
+  if (event.ctrlKey && event.key === "e") {
+    event.preventDefault();
+    create_page();
+  }
+});

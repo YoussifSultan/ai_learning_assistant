@@ -443,10 +443,37 @@ audio::-webkit-media-controls-panel {
   margin-right: 30px; /* adjust the px as you like */
 }
 
- iframe {
+iframe {
         width: 100%;
         height: 60vh;
         border: none;
         border-radius: 12px;
         overflow: hidden;
       }
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #1e1e2f, #2d2d44);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s ease;
+}
+
+.back-btn:hover {
+  background: linear-gradient(135deg, #2b2b40, #3a3a5c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.back-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
