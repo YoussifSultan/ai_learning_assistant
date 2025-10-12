@@ -44,7 +44,7 @@ def create_audio(text,noteID) ->str:
     for chunk in chunks:
         if chunk.strip():  # skip empty
             tts = gTTS(text=chunk, lang="en")
-            filename = f"assets/audio/temp/part{i}.mp3"
+            filename = f"{NOTES_DIR}/{noteID}/assets/audio/temp/part{i}.mp3"
             tts.save(filename)
             print(f"Saved {filename}")
             i += 1
@@ -54,13 +54,13 @@ def create_audio(text,noteID) ->str:
 
     combined = AudioSegment.empty()
     for j in range(1, len(chunks)):
-        path = f"assets/audio/temp/part{j}.mp3"
+        path = f"{NOTES_DIR}/{noteID}/assets/temp/part{j}.mp3"
         combined += AudioSegment.from_mp3(path)
     unique_id = uuid.uuid4()
     location =  f"{NOTES_DIR}/{noteID}/assets/{unique_id}.mp3"
 
     combined.export(location, format="mp3")
-    # rmtree("assets/audio/temp")
+    rmtree(f"{NOTES_DIR}/{noteID}/assets/temp/")
     return location
 
 

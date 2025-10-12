@@ -1,8 +1,9 @@
-from PyQt6.QtCore import QObject, pyqtSlot, QUrl ,Qt
+from PyQt6.QtCore import QObject, pyqtSlot, QUrl ,Qt ,pyqtSignal
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from PyQt6.QtWebChannel import QWebChannel
 from PyQt6.QtWidgets import QApplication
 import sys, os
+from concurrent.futures import ThreadPoolExecutor
 import uuid
 from pathlib import Path
 from llm.llm import generate_article,generate_lecture ,generate_mindmap ,generate_flashcards
@@ -11,6 +12,10 @@ from filemanager import create_note , link_notes ,save_meta, metadata, load_meta
 from datetime import datetime
 from pathlib import Path
 from treeview import generate_treeviewJson
+
+executor = ThreadPoolExecutor(max_workers=4)
+
+
 # import debugpy
 app = QApplication(sys.argv)
 # debugpy.debug_this_thread() 
@@ -19,6 +24,10 @@ channel = QWebChannel()
 DB_PATH = "database/notes.db"
 NOTES_DIR = "Knowbases/base1"
 class Backend(QObject):
+    pageCreated = pyqtSignal(str)
+    lectureCreated = pyqtSignal(str)
+    mindmapCreated = pyqtSignal(str)
+    flashcardsCreated = pyqtSignal(str)
     def __init__(self):
         super().__init__()
 
@@ -39,16 +48,28 @@ class Backend(QObject):
     @pyqtSlot(str,str,str, str,result= str)
     def createpage(self,selection,content,parent_id,level = "grade 11") :
         """Create a new empty page file and return its safe filename."""
-        note_id =uuid.uuid4().hex
-        filename = f"{note_id}.html"
-        path = os.path.abspath(NOTES_DIR)
-        # article = generate_article(selection,content, level)
-        create_note(str(note_id),selection,str(parent_id))
-        link_notes(parent_id,note_id)
-        pageLocation = Path(NOTES_DIR) / note_id / filename
-        with open(pageLocation, "w", encoding="utf-8") as l:
-            l.write('dsfknasdj sdfjndsj fsdjfnsdjn')
-        return note_id
+        def task(): 
+            note_id =uuid.uuid4().hex
+            filename = f"{note_id}.html"
+            article = generate_article(selection,content, level)
+            create_note(str(note_id),selection,str(parent_id))
+            link_notes(parent_id,note_id)
+            pageLocation = Path(NOTES_DIR) / note_id / filename
+            with open(pageLocation, "w", encoding="utf-8") as l:
+                l.write(article)
+            return note_id
+            
+        future =executor.submit(task)
+        def on_done(fut):
+            try:
+                result = fut.result()
+                self.pageCreated.emit(result)
+                # You can emit a signal to JS here if needed
+            except Exception as e:
+                print("Error:", e)
+
+        future.add_done_callback(on_done)
+        return "started"
     
     @pyqtSlot(str,str,result=str)
     def create_lecture(self,article,noteID):
@@ -83,10 +104,15 @@ class Backend(QObject):
 
     @pyqtSlot(str, result=str)
     def print(self, problem):
-        
         print(problem)
+
     @pyqtSlot(str, result=str)
     def delete_Note(self, noteID):
+        """
+        Delete a note and all its children recursively.
+        Removes folders, meta.json and updates parent note.
+        Called from JS (Ctrl+D). Always return a value.
+        """
         delete_note(noteID)
         
 

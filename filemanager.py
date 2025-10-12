@@ -46,7 +46,7 @@ def create_note(note_id,title:str, parent_id=None):
     meta = metadata(
         id=note_id,parent_id=parent_id,children=[],title=title,
         assets_location=Assetlocation(flashcards_location="",lecture_location="",mindmap_location=""),
-        created_At=datetime.now(),update_At=datetime.now(),tags=[])
+        created_At=now(),update_At=now(),tags=[])
    
     with open(os.path.join(path, "meta.json"), "w", encoding="utf-8") as f:
         f.write(meta.model_dump_json())

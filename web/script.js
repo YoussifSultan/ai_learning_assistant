@@ -39,7 +39,7 @@ async function create_page() {
   const loader = LoadingBox("Fetching data...");
   loader.show();
   current_page = historyPages.at(-1);
-  const noteID = await backend.createpage(
+  backend.createpage(
     selection.toString(),
     getContextAroundSelection(
       extractTextFromHTML(content),
@@ -48,37 +48,38 @@ async function create_page() {
     current_page,
     "grade 11"
   );
+  backend.pageCreated.connect(function (note_id) {
+    loader.hide();
 
-  loader.hide();
+    // build the link and attach the filename as data attribute
+    const link = document.createElement("a");
+    link.href = "#";
+    // link.onclick = (e) => showPage(pagename, e);
+    link.setAttribute("onclick", "showPage('" + note_id + "',event)");
 
-  // build the link and attach the filename as data attribute
-  const link = document.createElement("a");
-  link.href = "#";
-  // link.onclick = (e) => showPage(pagename, e);
-  link.setAttribute("onclick", "showPage('" + noteID + "',event)");
+    link.draggable = false; // prevent accidental drags
 
-  link.draggable = false; // prevent accidental drags
+    // preserve formatting
+    const contents = range.extractContents();
+    link.appendChild(contents);
 
-  // preserve formatting
-  const contents = range.extractContents();
-  link.appendChild(contents);
+    // optional: wrap so it's non-editable (but if that blocks clicks in your environment, remove contentEditable=false)
+    const wrapper = document.createElement("span");
+    wrapper.contentEditable = "false"; // if this breaks clickability, remove this line
+    wrapper.appendChild(link);
 
-  // optional: wrap so it's non-editable (but if that blocks clicks in your environment, remove contentEditable=false)
-  const wrapper = document.createElement("span");
-  wrapper.contentEditable = "false"; // if this breaks clickability, remove this line
-  wrapper.appendChild(link);
+    range.insertNode(wrapper);
 
-  range.insertNode(wrapper);
+    // move caret after inserted wrapper
+    selection.removeAllRanges();
+    const caret = document.createRange();
+    caret.setStartAfter(wrapper);
+    caret.collapse(true);
+    selection.addRange(caret);
+    loadNotes();
 
-  // move caret after inserted wrapper
-  selection.removeAllRanges();
-  const caret = document.createRange();
-  caret.setStartAfter(wrapper);
-  caret.collapse(true);
-  selection.addRange(caret);
-  loadNotes();
-
-  menu.style.display = "none";
+    menu.style.display = "none";
+  });
 }
 
 async function showPage(noteID, e, isloading = false) {
@@ -126,10 +127,14 @@ async function loadpage() {
   current_page = historyPages.at(-1);
   assets_locations = {};
   await fetch(NOTES_DIR + "/" + current_page + "/meta.json")
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch JSON file");
+
+      // Read it only once
+      return response.json();
+    })
     .then((data) => {
       assets_locations = data["assets_location"];
-      console.warn(assets_locations.lecture_location);
     })
     .catch((error) => console.error("Error loading JSON:", error));
   //init
@@ -138,12 +143,12 @@ async function loadpage() {
   const mindmap_viewer = document.getElementById("mindmap_viewer");
 
   // load lecture
-  lecture_player.src = assets_locations.lecture_location;
+  lecture_player.src = assets_locations["lecture_location"];
   // load mindmap
-  mindmap_viewer.src = assets_locations.mindmap_location;
+  mindmap_viewer.src = assets_locations["mindmap_location"];
   // load flashcards
   flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
-    assets_locations.flashcards_location
+    assets_locations["flashcards_location"]
   )} `;
 }
 async function create_lecture() {

@@ -17,12 +17,12 @@ async function loadflashcards() {
     },
   ];
   if (flashcardslocation != null) {
-    await fetch(flashcardslocation)
-      .then((response) => response.json())
-      .then((data) => {
-        flashcards = data["flashcards"];
-      })
-      .catch((error) => console.error("Error loading JSON:", error));
+    // await fetch(flashcardslocation)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     flashcards = data["flashcards"];
+    //   })
+    //   .catch((error) => console.error("Error loading JSON:", error));
   } else {
     flashcards = [];
   }
