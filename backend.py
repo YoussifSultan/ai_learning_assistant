@@ -7,10 +7,10 @@ import uuid
 from pathlib import Path
 from llm.llm import generate_article,generate_lecture ,generate_mindmap ,generate_flashcards
 from llm.llm_helper import create_audio ,create_mindmap
-from filemanager import create_note , link_notes ,save_meta, metadata, load_meta ,Assetlocation
+from filemanager import create_note , link_notes ,save_meta, metadata, load_meta ,Assetlocation ,delete_note
 from datetime import datetime
 from pathlib import Path
-
+from treeview import generate_treeviewJson
 # import debugpy
 app = QApplication(sys.argv)
 # debugpy.debug_this_thread() 
@@ -21,6 +21,10 @@ NOTES_DIR = "Knowbases/base1"
 class Backend(QObject):
     def __init__(self):
         super().__init__()
+
+    @pyqtSlot(result=str)
+    def getNoteTreeJson(self):
+        return generate_treeviewJson()
 
     @pyqtSlot(str,str)
     def save_content(self, pageName:str,content):
@@ -79,7 +83,12 @@ class Backend(QObject):
 
     @pyqtSlot(str, result=str)
     def print(self, problem):
+        
         print(problem)
+    @pyqtSlot(str, result=str)
+    def delete_Note(self, noteID):
+        delete_note(noteID)
+        
 
 
 
@@ -90,7 +99,6 @@ view.page().setWebChannel(channel)
 file_path = os.path.abspath("web/index1.html")
 view.load(QUrl.fromLocalFile(file_path))
 view.showMaximized()   
-
 view.show()
 
 sys.exit(app.exec())

@@ -4,10 +4,12 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   overflow: hidden; /* completely disable scrolling */
+  background: transparent !important;
+
 }
 body {
   font-family: Inter, system-ui, sans-serif;
-  background: #ffffff; /* White background */
+  background: transparent ; /* White background */
   color: #1a1a1a; /* Dark text */
   min-height: 100vh;
   padding: 2rem;
@@ -221,4 +223,8 @@ details.hint[open] {
   .card {
     height: 260px;
   }
+}
+
+.nav-btn {
+  display: none;
 }

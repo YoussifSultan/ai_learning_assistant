@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 import sqlite3
 from pydantic import Field, BaseModel
 from datetime import datetime
@@ -71,8 +72,11 @@ def link_notes(parent_id, child_id):
 def load_meta(note_id) ->metadata:
     path = os.path.join(NOTES_DIR, note_id, "meta.json")
     path = path.replace("\\", "/")
-    with open(path, "r", encoding="utf-8") as f:
-        return metadata.model_validate_json(f.read())
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return metadata.model_validate_json(f.read())
+    except FileNotFoundError:
+        print(f"Meta file not found for note_id: {note_id}")
 
 def save_meta(note_id,  meta : metadata):
     path = os.path.join(NOTES_DIR, note_id, "meta.json")
@@ -169,3 +173,34 @@ def build_graph():
     """
     Placeholder for note relationship graph or AI embeddings.
     """
+
+import shutil
+
+# =========================================================
+# 9️⃣ Delete Note (with all children)
+# =========================================================
+def delete_note(note_id):
+    """
+    Delete a note and all its children recursively.
+    Removes folders, meta.json and updates parent note.
+    """
+    meta = load_meta(note_id)
+    try:
+    # Recursively delete children first
+        for child_id in meta.children:
+            delete_note(child_id)
+            # Delete from filesystem
+        note_path = Path(NOTES_DIR) / note_id
+        if os.path.exists(note_path):
+            shutil.rmtree(note_path)
+
+    # Update parent if exists
+        parent_id = meta.parent_id
+        if parent_id:
+            parent_meta = load_meta(parent_id)
+            parent_meta.children = [c for c in parent_meta.children if c != note_id]
+            save_meta(parent_id, parent_meta)
+    except Exception as e:
+        print(f"Error deleting note '{note_id}': {e}")
+
+    print(f"❌ Note '{note_id}' and all subnotes deleted.")

@@ -76,6 +76,7 @@ async function create_page() {
   caret.setStartAfter(wrapper);
   caret.collapse(true);
   selection.addRange(caret);
+  loadNotes();
 
   menu.style.display = "none";
 }
@@ -87,12 +88,24 @@ async function showPage(noteID, e, isloading = false) {
 
   if (!isloading) {
     saveContent();
+  } else {
+    loadNotes();
   }
   historyPages.push(noteID);
 
   fetch(NOTES_DIR + "/" + noteID + "/" + noteID + ".html")
-    .then((res) => res.text())
-    .then((html) => (document.getElementById("editor").innerHTML = html));
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Note not found: ${notePath}`);
+      }
+      return res.text();
+    })
+    .then((html) => (document.getElementById("editor").innerHTML = html))
+    .catch((err) => {
+      alert("Note not found, going back...");
+      historyPages.pop();
+      return;
+    });
   loadpage();
 }
 function goBack() {
@@ -244,6 +257,15 @@ const observer = new MutationObserver(() => {
   loadpage(); // ✅ element appeared — safe to run
 });
 
+async function loadNotes() {
+  const treeRoot = document.getElementById("tree-root");
+  console.warn("Loading note tree");
+  notesTree = JSON.parse(await backend.getNoteTreeJson());
+  treeRoot.innerHTML = "";
+
+  const rootNode = notesTree.root ?? notesTree;
+  treeRoot.appendChild(createTreeNode(rootNode));
+}
 observer.observe(editor, { childList: true, subtree: true });
 document.addEventListener("keydown", function (event) {
   // Check if Alt is pressed AND the left arrow key
@@ -262,5 +284,87 @@ document.addEventListener("keydown", function (event) {
   if (event.ctrlKey && event.key === "e") {
     event.preventDefault();
     create_page();
+  }
+});
+// Recursive function to create the HTML tree
+function createTreeNode(note) {
+  const li = document.createElement("li");
+  li.classList.add("tree-node");
+  li.dataset.id = note.id;
+
+  // clickable title span
+  const titleSpan = document.createElement("span");
+  titleSpan.textContent = note.id;
+  titleSpan.classList.add("node-title");
+  li.appendChild(titleSpan);
+
+  // recursively build children if they exist
+  if (note.children && note.children.length > 0) {
+    li.classList.add("collapsible");
+
+    const ul = document.createElement("ul");
+    note.children.forEach((child) => ul.appendChild(createTreeNode(child)));
+    li.appendChild(ul);
+
+    // 🔹 Expand/collapse on arrow click (the ::before pseudo-element)
+    // We'll detect clicks near the left side of the title area.
+    li.addEventListener("click", (e) => {
+      // click within first 16px from left → toggle
+      const clickX = e.offsetX;
+      if (clickX < 16) {
+        e.stopPropagation();
+        li.classList.toggle("expanded");
+      }
+    });
+  }
+
+  // 🔹 Click title to open the note
+  titleSpan.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showPage(note.id);
+  });
+
+  return li;
+}
+
+const sidebar = document.getElementById("sidebar");
+const resizer = document.getElementById("sidebar-resizer");
+
+let isResizing = false;
+
+resizer.addEventListener("mousedown", (e) => {
+  isResizing = true;
+  document.body.style.cursor = "ew-resize";
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isResizing) return;
+  const newWidth = Math.min(Math.max(e.clientX, 180), 500); // min/max width
+  sidebar.style.width = `${newWidth}px`;
+});
+
+document.addEventListener("mouseup", () => {
+  isResizing = false;
+  document.body.style.cursor = "default";
+});
+const toggleBtn = document.getElementById("theme-toggle");
+const body = document.body;
+
+// Load saved theme preference
+if (localStorage.getItem("theme") === "dark") {
+  body.setAttribute("data-theme", "dark");
+}
+
+// Handle toggle
+toggleBtn.addEventListener("click", () => {
+  const isDark = body.getAttribute("data-theme") === "dark";
+  body.setAttribute("data-theme", isDark ? "light" : "dark");
+  localStorage.setItem("theme", isDark ? "light" : "dark");
+});
+document.addEventListener("keydown", function (event) {
+  if (event.ctrlKey && event.key === "d") {
+    event.preventDefault();
+    backend.delete_Note(historyPages.at(-1));
+    loadNotes();
   }
 });
