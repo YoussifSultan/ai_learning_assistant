@@ -143,13 +143,29 @@ async function loadpage() {
   const mindmap_viewer = document.getElementById("mindmap_viewer");
 
   // load lecture
-  lecture_player.src = assets_locations["lecture_location"];
+  lecture_player.src = "../" + assets_locations["lecture_location"];
   // load mindmap
-  mindmap_viewer.src = assets_locations["mindmap_location"];
+  mindmap_viewer.src = "../" + assets_locations["mindmap_location"];
   // load flashcards
   flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcardslocation=${encodeURIComponent(
-    assets_locations["flashcards_location"]
+    "../../" + assets_locations["flashcards_location"]
   )} `;
+  toggleVisibility();
+  addImageWrapper();
+}
+
+async function addImageWrapper() {
+  document.querySelectorAll("img").forEach((img) => {
+    // Skip if already wrapped
+    if (img.parentElement.classList.contains("img-wrapper")) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "img-wrapper";
+    wrapper.contentEditable = "false"; // prevent editing inside wrapper
+
+    img.parentNode.insertBefore(wrapper, img);
+    wrapper.appendChild(img);
+  });
 }
 async function create_lecture() {
   const content = editor.innerHTML;
@@ -158,12 +174,15 @@ async function create_lecture() {
   loader.show();
   current_page = historyPages.at(-1);
   lecture_filelocation = await backend.create_lecture(content, current_page);
-  loader.hide();
-  // build the link and attach the filename as data attribute
-  const lecture_player = document.getElementById("lecture_player");
-  lecture_filelocation = "../" + lecture_filelocation;
-  lecture_player.src = lecture_filelocation;
-  lecture_player.play(); // optional — plays automatically
+  backend.lectureCreated.connect(function (lecture_filelocation) {
+    loader.hide();
+    // build the link and attach the filename as data attribute
+    const lecture_player = document.getElementById("lecture_player");
+    lecture_filelocation = "../" + lecture_filelocation;
+    lecture_player.src = lecture_filelocation;
+    lecture_player.play(); // optional — plays automatically
+    toggleVisibility();
+  });
   // move caret after inserted wrapper
 }
 function extractTextFromHTML(htmlString) {
@@ -196,18 +215,15 @@ async function create_mindmap() {
   const content = editor.innerHTML;
   const loader = LoadingBox("Fetching data...");
   loader.show();
-  mindmap_filelocation = await backend.create_mindmap(content);
-  loader.hide();
-  // build the link and attach the filename as data attribute
-  const mindmap_viewer = document.getElementById("mindmap_viewer");
-  mindmap_filelocation = "../" + mindmap_filelocation;
-  mindmap_viewer.src = mindmap_filelocation;
-  editor.innerHTML =
-    editor.innerHTML +
-    '<div id="mindmap_location" data-mindmap-location="' +
-    mindmap_filelocation +
-    '" ></div>';
-  saveContent();
+  await backend.create_mindmap(content, historyPages.at(-1));
+  backend.mindmapCreated.connect(function (mindmap_filelocation) {
+    loader.hide();
+    // build the link and attach the filename as data attribute
+    const mindmap_viewer = document.getElementById("mindmap_viewer");
+    mindmap_filelocation = "../" + mindmap_filelocation;
+    mindmap_viewer.src = mindmap_filelocation;
+    toggleVisibility();
+  });
 }
 
 async function create_flashcards() {
@@ -218,24 +234,18 @@ async function create_flashcards() {
   }
   const loader = LoadingBox("Fetching data...");
   loader.show();
-  flashcards_filelocation = await backend.create_flashcards(
-    content,
-    NOflashcards
-  );
-  loader.hide();
-  // build the link and attach the filename as data attribute
-  const flashcard_viewer = document.getElementById("flashcard_viewer");
-  flashcards_filelocation = "../" + flashcards_filelocation;
+  await backend.create_flashcards(content, NOflashcards, historyPages.at(-1));
+  backend.flashcardsCreated.connect(function (flashcards_filelocation) {
+    loader.hide();
+    // build the link and attach the filename as data attribute
+    const flashcard_viewer = document.getElementById("flashcard_viewer");
+    flashcards_filelocation = "../" + flashcards_filelocation;
 
-  flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcards=${encodeURIComponent(
-    flashcards_filelocation
-  )} `;
-  editor.innerHTML =
-    editor.innerHTML +
-    '<div id="flashcard_location" data-flashcard-location="' +
-    flashcards_filelocation +
-    '" ></div>';
-  saveContent();
+    flashcard_viewer.src = `flaschcard_carousel/flashcard.html?flashcards=${encodeURIComponent(
+      flashcards_filelocation
+    )} `;
+    toggleVisibility();
+  });
 }
 
 function LoadingBox(message = "Loading...") {
@@ -259,12 +269,13 @@ function LoadingBox(message = "Loading...") {
 }
 
 const observer = new MutationObserver(() => {
+  const lecture_player = document.getElementById("lecture_player");
+  if (!lecture_player) return; // ⛔ element not yet available
   loadpage(); // ✅ element appeared — safe to run
 });
 
 async function loadNotes() {
   const treeRoot = document.getElementById("tree-root");
-  console.warn("Loading note tree");
   notesTree = JSON.parse(await backend.getNoteTreeJson());
   treeRoot.innerHTML = "";
 
@@ -299,7 +310,7 @@ function createTreeNode(note) {
 
   // clickable title span
   const titleSpan = document.createElement("span");
-  titleSpan.textContent = note.id;
+  titleSpan.textContent = note.title;
   titleSpan.classList.add("node-title");
   li.appendChild(titleSpan);
 
@@ -373,3 +384,45 @@ document.addEventListener("keydown", function (event) {
     loadNotes();
   }
 });
+function toggleVisibility() {
+  const lectureSection = document.getElementById("lecture_player1");
+  const lecture = document.getElementById("lecture_player");
+  const mindmapSection = document.getElementById("mindmap-section");
+  const mindmap = document.getElementById("mindmap_viewer");
+  const flashcardsSection = document.getElementById("flashcards-section");
+  const flashcards = document.getElementById("flashcard_viewer");
+
+  if (
+    !lecture.src ||
+    lecture.src.trim() ===
+      "file:///F:/SourceProg/Projects/AI_Learning_Assistant/ai_learning_assistant3/" ||
+    lecture.src === "../"
+  ) {
+    lectureSection.style.display = "none";
+  } else {
+    lectureSection.style.display = "block";
+  }
+  // Hide/show Mindmap
+  if (
+    !mindmap.src ||
+    mindmap.src.trim() ===
+      "file:///F:/SourceProg/Projects/AI_Learning_Assistant/ai_learning_assistant3/" ||
+    mindmap.src === "../"
+  ) {
+    mindmapSection.style.display = "none";
+  } else {
+    mindmapSection.style.display = "block";
+  }
+
+  // Hide/show Flashcards
+  if (
+    !flashcards.src ||
+    flashcards.src.trim() ===
+      "file:///F:/SourceProg/Projects/AI_Learning_Assistant/ai_learning_assistant3/web/flaschcard_carousel/flashcard.html?flashcardslocation=..%2F..%2F" ||
+    flashcards.src === "flaschcard_carousel/flashcard.html"
+  ) {
+    flashcardsSection.style.display = "none";
+  } else {
+    flashcardsSection.style.display = "block";
+  }
+}

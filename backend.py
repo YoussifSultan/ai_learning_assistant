@@ -1,6 +1,7 @@
 from PyQt6.QtCore import QObject, pyqtSlot, QUrl ,Qt ,pyqtSignal
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from PyQt6.QtWebChannel import QWebChannel
+from PyQt6.QtWebEngineCore import QWebEngineSettings
 from PyQt6.QtWidgets import QApplication
 import sys, os
 from concurrent.futures import ThreadPoolExecutor
@@ -20,6 +21,12 @@ executor = ThreadPoolExecutor(max_workers=4)
 app = QApplication(sys.argv)
 # debugpy.debug_this_thread() 
 view = QWebEngineView()
+view.settings().setAttribute(
+    QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True
+)
+view.settings().setAttribute(
+    QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True
+)
 channel = QWebChannel()
 DB_PATH = "database/notes.db"
 NOTES_DIR = "Knowbases/base1"
@@ -56,7 +63,7 @@ class Backend(QObject):
             link_notes(parent_id,note_id)
             pageLocation = Path(NOTES_DIR) / note_id / filename
             with open(pageLocation, "w", encoding="utf-8") as l:
-                l.write(article)
+                l.write(article)    
             return note_id
             
         future =executor.submit(task)
@@ -70,38 +77,77 @@ class Backend(QObject):
 
         future.add_done_callback(on_done)
         return "started"
-    
-    @pyqtSlot(str,str,result=str)
-    def create_lecture(self,article,noteID):
-        lecture = generate_lecture(article, "grade 11")
-        lecture_filelocation = create_audio(lecture,noteID )
-        new_meta =load_meta(note_id=noteID)
-        new_meta.assets_location.lecture_location =lecture_filelocation
-        save_meta(noteID,meta=new_meta)
-        return lecture_filelocation
-    
-    @pyqtSlot(str,str,result=str)
-    def create_mindmap(self,article,noteID):
-        nodes,edges =generate_mindmap(article)
-        mindmap_filelocation = create_mindmap(nodes=nodes,edges=edges,noteID=noteID)
-        new_meta =load_meta(note_id=noteID)
-        new_meta.assets_location.mindmap_location =mindmap_filelocation
-        save_meta(noteID,meta=new_meta)
-        return mindmap_filelocation
-    
-    @pyqtSlot(str,int,str,result=str)
-    def create_flashcards(self,article,NOflashcards,noteID):
-        flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
-        json_str = flashcards.model_dump_json()
-        flashcard_location = f"{NOTES_DIR}/{noteID}/assets/{uuid.uuid4().hex}.json"
-        new_meta =load_meta(note_id=noteID)
-        new_meta.assets_location.flashcards_location =flashcard_location
-        save_meta(noteID,meta=new_meta)
-        with open(flashcard_location, "w", encoding="utf-8") as f:
-            f.write(json_str)  
-        return  flashcard_location
-    
+    @pyqtSlot(str, str, result=str)
+    def create_lecture(self, article, noteID):
+        """Generate lecture audio in background."""
+        def task():
+            lecture = generate_lecture(article, "grade 11")
+            lecture_filelocation = create_audio(lecture, noteID)
+            new_meta = load_meta(note_id=noteID)
+            new_meta.assets_location.lecture_location = lecture_filelocation
+            save_meta(noteID, meta=new_meta)
+            return lecture_filelocation
 
+        future = executor.submit(task)
+
+        def on_done(fut):
+            try:
+                result = fut.result()
+                self.lectureCreated.emit(result)
+            except Exception as e:
+                print("Error in create_lecture:", e)
+
+        future.add_done_callback(on_done)
+        return "started"
+
+    @pyqtSlot(str, str, result=str)
+    def create_mindmap(self, article, noteID):
+        """Generate mindmap in background."""
+        def task():
+            nodes, edges = generate_mindmap(article)
+            mindmap_filelocation = create_mindmap(nodes=nodes, edges=edges, noteID=noteID)
+            new_meta = load_meta(note_id=noteID)
+            new_meta.assets_location.mindmap_location = mindmap_filelocation
+            save_meta(noteID, meta=new_meta)
+            return mindmap_filelocation
+
+        future = executor.submit(task)
+
+        def on_done(fut):
+            try:
+                result = fut.result()
+                self.mindmapCreated.emit(result)
+            except Exception as e:
+                print("Error in create_mindmap:", e)
+
+        future.add_done_callback(on_done)
+        return "started"
+
+    @pyqtSlot(str, int, str, result=str)
+    def create_flashcards(self, article, NOflashcards, noteID):
+        """Generate flashcards in background."""
+        def task():
+            flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
+            json_str = flashcards.model_dump_json()
+            flashcard_location = f"{NOTES_DIR}/{noteID}/assets/{uuid.uuid4().hex}.json"
+            new_meta = load_meta(note_id=noteID)
+            new_meta.assets_location.flashcards_location = flashcard_location
+            save_meta(noteID, meta=new_meta)
+            with open(flashcard_location, "w", encoding="utf-8") as f:
+                f.write(json_str)
+            return flashcard_location
+
+        future = executor.submit(task)
+
+        def on_done(fut):
+            try:
+                result = fut.result()
+                self.flashcardsCreated.emit(result)
+            except Exception as e:
+                print("Error in create_flashcards:", e)
+
+        future.add_done_callback(on_done)
+        return "started"
     @pyqtSlot(str, result=str)
     def print(self, problem):
         print(problem)
@@ -122,9 +168,8 @@ backend = Backend()
 channel.registerObject("backend", backend)
 view.page().setWebChannel(channel)
 
-file_path = os.path.abspath("web/index1.html")
+file_path = os.path.abspath("web/home.html")
 view.load(QUrl.fromLocalFile(file_path))
 view.showMaximized()   
 view.show()
-
 sys.exit(app.exec())

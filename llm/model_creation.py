@@ -6,7 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field, BaseModel
 
 
-os.environ["DEEPSEEK_API_KEY"] = "sk-df6670570e7a40c29b1cd0f335e874b6"
+os.environ["DEEPSEEK_API_KEY"] = "sk-ca491551b7b949b4b2cb7d150711e17f"
 
 reasoner_model = ChatDeepSeek(model= "deepseek-reasoner",temperature=0.3)
 

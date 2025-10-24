@@ -1,67 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Editor with Sidebar</title>
-    <link rel="stylesheet" href="style1.css" />
-    <!-- <link rel="stylesheet" href="flashcard.css" /> -->
+    <title>AI Learning Assistant</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
   </head>
-  <body onload="showPage('root',event,true)">
-    <nav class="navbar">
-      <button onclick="goBack()" class="back-btn">< Back</button>
-      <button onclick="saveContent()">Save</button>
-      <div class="dropdown">
-        <button class="dropbtn">Create ▼</button>
-        <div class="dropdown-content">
-          <a href="#" onclick="create_mindmap()">Mindmap</a>
-          <a href="#" onclick="create_lecture()">Lecture</a>
-          <a href="#" onclick="createFlowchart()">Flowchart</a>
-          <a href="#" onclick="create_flashcards()">Flashcards</a>
-        </div>
-      </div>
-    </nav>
 
-    <div class="main">
-      <div contenteditable="false" id="lectures_audio"></div>
-      <div contenteditable="false" id="mindmap"></div>
-      <div contenteditable="false" id="flowchart"></div>
-      <!-- ✅ Embedded mindmap.html -->
-      <section id="mindmap-section">
-        <h2>Mindmap</h2>
+  <body onload="showPage('root', event, true)">
+    <!-- 🔹 SIDEBAR -->
+    <aside class="sidebar">
+      <h2>🧠 Knowledge Hub</h2>
+
+      <nav class="menu">
+        <!-- === Navigation Section === -->
+        <div class="menu-section">Navigation</div>
+        <button id="theme-toggle">🌞 / 🌙</button>
+
+        <div class="menu-item" onclick="goBack()"><i>⬅</i> Back</div>
+        <div class="menu-item" onclick="saveContent()">💾 Save</div>
+
+        <!-- === Create Section === -->
+        <div class="menu-section">Create</div>
+        <div class="menu-item" onclick="create_mindmap()">🕸 Mindmap</div>
+        <div class="menu-item" onclick="create_lecture()">🎧 Lecture</div>
+        <div class="menu-item" onclick="createFlowchart()">🧩 Flowchart</div>
+        <div class="menu-item" onclick="create_flashcards()">🃏 Flashcards</div>
+
+        <!-- === Notes Tree Section === -->
+        <div class="menu-section">Notes</div>
+        <ul id="tree-root"></ul>
+      </nav>
+      <div class="sidebar-resizer" id="sidebar-resizer"></div>
+    </aside>
+
+    <!-- 🔹 MAIN CONTENT -->
+    <main class="main">
+      <div id="menu">
+        <button onclick="copyText()">📋</button>
+        <button onclick="create_page()">Expand</button>
+      </div>
+      <section id="editor-section" class="panel">
+        <h1>Editor</h1>
+        <article
+          class="markdown-term"
+          id="editor"
+          contenteditable="true"
+        ></article>
+      </section>
+      <section id="lecture_player1" class="panel">
+        <h1>Lecture Player</h1>
+        <audio controls id="lecture_player">
+          <source src="" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      </section>
+
+      <section id="mindmap-section" class="panel">
+        <h1>Mindmap</h1>
         <iframe
           id="mindmap_viewer"
           src="../pages/TEST_saved.html"
           width="100%"
           height="500px"
-          style="border: 1px solid #ccc; border-radius: 8px"
+          style="border: 1px solid #ccc; border-radius: 12px"
         ></iframe>
       </section>
-      <section id="lecture_player">
-        <h2>Lecture Player</h2>
-        <div>
-          <audio controls id="lecture_player">
-            <source src="" type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-      </section>
-      <div id="menu">
-        <button onclick="copyText()">📋</button>
-        <button onclick="create_page()">Expand</button>
-      </div>
 
-      <article
-        class="markdown-term"
-        id="editor"
-        class="editable"
-        contenteditable="true"
-      ></article>
-      <iframe
-        id="flashcard_viewer"
-        src="flaschcard_carousel/flashcard.html"
-      ></iframe>
-    </div>
+      <section id="flashcards-section" class="panel">
+        <h1>Flashcards</h1>
+        <iframe
+          id="flashcard_viewer"
+          src="flaschcard_carousel/flashcard.html"
+          style="background: transparent"
+          allowtransparency="true"
+          frameborder="0"
+        ></iframe>
+      </section>
+    </main>
 
     <script src="script.js" scrolling="no" tabindex="0"></script>
   </body>

@@ -4,7 +4,6 @@ async function loadflashcards() {
    *****************/
   const params = new URLSearchParams(window.location.search);
   flashcardslocation = params.get("flashcardslocation");
-  flashcardslocation = "../" + flashcardslocation;
   flashcards = [
     {
       id: "card1",
@@ -17,16 +16,19 @@ async function loadflashcards() {
     },
   ];
   if (flashcardslocation != null) {
-    // await fetch(flashcardslocation)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     flashcards = data["flashcards"];
-    //   })
-    //   .catch((error) => console.error("Error loading JSON:", error));
+    await fetch(flashcardslocation)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch JSON file");
+
+        return response.json();
+      })
+      .then((data) => {
+        flashcards = data["flashcards"];
+      })
+      .catch((error) => console.error("Error loading JSON:", error));
   } else {
     flashcards = [];
   }
-
   const gallery = document.getElementById("gallery");
 
   /*****************
