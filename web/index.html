@@ -15,16 +15,19 @@
       <nav class="menu">
         <!-- === Navigation Section === -->
         <div class="menu-section">Navigation</div>
-        <button id="theme-toggle">🌞 / 🌙</button>
+        <!-- <button id="theme-toggle">🌞 / 🌙</button> -->
 
-        <div class="menu-item" onclick="goBack()"><i>⬅</i> Back</div>
+        <div class="menu-item" onclick="toggleTheme()">
+          <i>🌞 / 🌙</i>
+        </div>
+        <div class="menu-item" onclick="goHome()"><i>🏠</i> Home</div>
         <div class="menu-item" onclick="saveContent()">💾 Save</div>
+        <div class="menu-item" onclick="goBack()"><i>⬅</i> Back</div>
 
         <!-- === Create Section === -->
         <div class="menu-section">Create</div>
         <div class="menu-item" onclick="create_mindmap()">🕸 Mindmap</div>
         <div class="menu-item" onclick="create_lecture()">🎧 Lecture</div>
-        <div class="menu-item" onclick="createFlowchart()">🧩 Flowchart</div>
         <div class="menu-item" onclick="create_flashcards()">🃏 Flashcards</div>
 
         <!-- === Notes Tree Section === -->

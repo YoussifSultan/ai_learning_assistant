@@ -3,9 +3,9 @@ from pathlib import Path
 import uuid
 import networkx as nx
 import matplotlib.pyplot as plt
+import filemanager
 from pyvis.network import Network
 
-NOTES_DIR = "Knowbases/base1"
 def create_mindmap(nodes , edges,noteID:str) -> str:
     nodes = nodes
     edges = edges
@@ -16,7 +16,7 @@ def create_mindmap(nodes , edges,noteID:str) -> str:
     net = Network(notebook=True, height="750px", width="100%", directed=True,cdn_resources="in_line")
     net.from_nx(G)
     net.force_atlas_2based()
-    filelocation = f"{NOTES_DIR}/{noteID}/assets/{uuid.uuid4().hex}.html"
+    filelocation = f"{filemanager.NOTES_DIR}/{noteID}/assets/{uuid.uuid4().hex}.html"
     html = net.generate_html(filelocation,notebook=False,local=True)
     with open(filelocation, "w", encoding="utf-8") as f:
         f.write(html)
@@ -57,7 +57,7 @@ def create_audio(text,noteID) ->str:
         path = f"llm/temp/part{j}.mp3"
         combined += AudioSegment.from_mp3(path)
     unique_id = uuid.uuid4()
-    location =  f"{NOTES_DIR}/{noteID}/assets/{unique_id}.mp3"
+    location =  f"{filemanager.NOTES_DIR}/{noteID}/assets/{unique_id}.mp3"
 
     combined.export(location, format="mp3")
     rmtree(f"llm/temp/")

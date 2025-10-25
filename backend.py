@@ -9,8 +9,9 @@ import uuid
 from pathlib import Path
 from llm.llm import generate_article,generate_lecture ,generate_mindmap ,generate_flashcards
 from llm.llm_helper import create_audio ,create_mindmap
-from filemanager import create_note , link_notes ,save_meta, metadata, load_meta ,Assetlocation ,delete_note
+from filemanager import create_note , link_notes ,save_meta, metadata, load_meta ,Assetlocation ,delete_note  ,create_knowledge_base
 from datetime import datetime
+import filemanager
 from pathlib import Path
 from treeview import generate_treeviewJson
 
@@ -29,7 +30,6 @@ view.settings().setAttribute(
 )
 channel = QWebChannel()
 DB_PATH = "database/notes.db"
-NOTES_DIR = "Knowbases/base1"
 class Backend(QObject):
     pageCreated = pyqtSignal(str)
     lectureCreated = pyqtSignal(str)
@@ -45,7 +45,7 @@ class Backend(QObject):
     @pyqtSlot(str,str)
     def save_content(self, pageName:str,content):
         """Called from JS (Ctrl+S). Always return a value."""
-        pageLocation = Path(NOTES_DIR) / pageName / f"{pageName}.html"
+        pageLocation = Path(filemanager.NOTES_DIR) / pageName / f"{pageName}.html"
         with open(pageLocation, "w", encoding="utf-8") as f:
             f.write(content)
         new_meta =load_meta(note_id=pageName)
@@ -61,7 +61,7 @@ class Backend(QObject):
             article = generate_article(selection,content, level)
             create_note(str(note_id),selection,str(parent_id))
             link_notes(parent_id,note_id)
-            pageLocation = Path(NOTES_DIR) / note_id / filename
+            pageLocation = Path(filemanager.NOTES_DIR) / note_id / filename
             with open(pageLocation, "w", encoding="utf-8") as l:
                 l.write(article)    
             return note_id
@@ -129,7 +129,7 @@ class Backend(QObject):
         def task():
             flashcards = generate_flashcards(article=article, NOFlashcards=NOflashcards)
             json_str = flashcards.model_dump_json()
-            flashcard_location = f"{NOTES_DIR}/{noteID}/assets/{uuid.uuid4().hex}.json"
+            flashcard_location = f"{filemanager.NOTES_DIR}/{noteID}/assets/{uuid.uuid4().hex}.json"
             new_meta = load_meta(note_id=noteID)
             new_meta.assets_location.flashcards_location = flashcard_location
             save_meta(noteID, meta=new_meta)
@@ -161,14 +161,35 @@ class Backend(QObject):
         """
         delete_note(noteID)
         
+    @pyqtSlot( result=str)
+    def getNotesDIR(self):
+        return "../" +filemanager.NOTES_DIR
+        
+    @pyqtSlot(str,str,str)
+    def create_kb(self,title,summary,description ):
+        create_knowledge_base(title,description,summary)
+    @pyqtSlot(str)
+    def open_kb(self, kb_id):
+        filemanager.NOTES_DIR = f"knowbases/{kb_id}"
+        file_path = os.path.abspath("web/index.html")
+        view.load(QUrl.fromLocalFile(file_path))
+        view.show()
+    @pyqtSlot()
+    def goHome(self):
+        file_path = os.path.abspath("web/home_page/home.html")
+        view.load(QUrl.fromLocalFile(file_path))
+        view.show()
 
+
+        
+        
 
 
 backend = Backend()
 channel.registerObject("backend", backend)
 view.page().setWebChannel(channel)
 
-file_path = os.path.abspath("web/home.html")
+file_path = os.path.abspath("web/home_page/home.html")
 view.load(QUrl.fromLocalFile(file_path))
 view.showMaximized()   
 view.show()

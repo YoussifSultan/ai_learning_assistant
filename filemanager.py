@@ -2,6 +2,7 @@ import os
 import json
 from pathlib import Path
 import sqlite3
+import uuid
 from pydantic import Field, BaseModel
 from datetime import datetime
 
@@ -204,3 +205,24 @@ def delete_note(note_id):
         print(f"Error deleting note '{note_id}': {e}")
 
     print(f"❌ Note '{note_id}' and all subnotes deleted.")
+
+# =========================================================
+# Create the Knowledge base
+# =========================================================
+def create_knowledge_base(title:str , description:str, summary:str):
+    # add base folder
+    id = uuid.uuid4().hex
+    folder = Path( f"Knowbases/{id}")
+    folder.mkdir(parents=True, exist_ok=True)
+    # add knowbases to the json file
+    new_kb = { "id": id, "title": title, "description": description, "summary": summary}
+    with open("Knowbases/bases.json", "r", encoding="utf-8") as file:
+        data = json.load(file)   # 'data' is now a Python list
+    data.append(new_kb)
+    with open("Knowbases/bases.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=2)
+    global NOTES_DIR 
+    NOTES_DIR= f"Knowbases/{id}"
+    # Create root folder
+    create_note(note_id="root", title=title, parent_id="root")
+    

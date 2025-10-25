@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KnowledgeBase Hub</title>
+    <link rel="stylesheet" href="homestyle1.css" />
+    <link rel="stylesheet" href="addnewkb.css" />
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="navbar">
+        <h1 class="logo">KnowledgeBase<span>Hub</span></h1>
+        <div class="nav-links">
+          <a href="#">Home</a>
+          <a href="#kb">Knowledge Bases</a>
+          <a href="#mp">Marketplace</a>
+        </div>
+
+        <!-- 🌙 Theme Toggle Button -->
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          ,
+          onclick="toggleTheme()"
+        >
+          🌙
+        </button>
+      </nav>
+
+      <div class="hero-content">
+        <h2>Step into a world of learning</h2>
+        <div class="search-bar">
+          <input type="text" placeholder="Search knowledge bases or notes..." />
+          <button>🔍</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="categories">
+      <div class="category">
+        <div class="icon lang">🌐</div>
+        <p>Language</p>
+      </div>
+      <div class="category">
+        <div class="icon math">➗</div>
+        <p>Mathematics</p>
+      </div>
+      <div class="category">
+        <div class="icon physics">⚛️</div>
+        <p>Physics</p>
+      </div>
+      <div class="category">
+        <div class="icon chem">🧪</div>
+        <p>Chemistry</p>
+      </div>
+      <div class="category">
+        <div class="icon bio">🧬</div>
+        <p>Biology</p>
+      </div>
+      <div class="category">
+        <div class="icon prog">💻</div>
+        <p>Programming</p>
+      </div>
+      <div class="category">
+        <div class="icon more">➕</div>
+        <p>More</p>
+      </div>
+    </section>
+
+    <!-- Knowledge Base Section -->
+    <section class="knowledge-bases" aria-labelledby="kb-heading" id="kb">
+      <div class="container">
+        <div class="kb-header">
+          <h2 id="kb-heading" class="kb-title">Knowledge Base</h2>
+          <button id="add-kb-btn" class="kb-add-btn">
+            + Add New Knowledge Base
+          </button>
+        </div>
+
+        <div class="kb-grid" role="list" id="kb-grid"></div>
+      </div>
+    </section>
+
+    <!-- ✅ Modal for adding new Knowledge Base -->
+    <div id="kb-modal" class="kb-modal">
+      <div class="kb-modal-content">
+        <h3>Add New Knowledge Base</h3>
+
+        <label for="kb-title-input">Title</label>
+        <input
+          type="text"
+          id="kb-title-input"
+          placeholder="e.g. How to Post Items"
+        />
+
+        <label for="kb-description-input">Description</label>
+        <textarea
+          id="kb-description-input"
+          rows="2"
+          placeholder="Short intro..."
+        ></textarea>
+
+        <label for="kb-summary-input">Summary</label>
+        <textarea
+          id="kb-summary-input"
+          rows="2"
+          placeholder="Details or overview..."
+        ></textarea>
+
+        <div class="kb-modal-buttons">
+          <button id="cancel-kb-btn">Cancel</button>
+          <button id="save-kb-btn">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 KnowledgeBaseHub — Learn. Share. Grow.</p>
+    </footer>
+
+    <script src="homescript.js"></script>
+
+    <!-- 🌗 Theme Toggle Script -->
+    <script>
+      const toggleBtn = document.getElementById("theme-toggle");
+
+      // Reference to <html> element (recommended for global theme control)
+      const html = document.documentElement;
+
+      // Load saved theme preference from localStorage
+      const savedTheme = localStorage.getItem("theme");
+
+      if (savedTheme === "dark") {
+        html.setAttribute("data-theme", "dark");
+        toggleBtn.textContent = "☀️"; // Light mode icon
+      } else {
+        html.setAttribute("data-theme", "light");
+        toggleBtn.textContent = "🌙"; // Dark mode icon
+      }
+
+      // Toggle between light and dark mode
+      toggleBtn.addEventListener("click", () => {
+        const isDark = html.getAttribute("data-theme") === "dark";
+        const newTheme = isDark ? "light" : "dark";
+        html.setAttribute("data-theme", newTheme);
+        toggleBtn.textContent = newTheme === "dark" ? "☀️" : "🌙";
+        localStorage.setItem("theme", newTheme);
+      });
+    </script>
+  </body>
+</html>

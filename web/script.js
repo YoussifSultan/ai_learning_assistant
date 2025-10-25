@@ -1,6 +1,5 @@
 let backend; // this will represent Python
 let historyPages = [];
-const NOTES_DIR = "../Knowbases/base1";
 // connect to Python side
 new QWebChannel(qt.webChannelTransport, function (channel) {
   backend = channel.objects.backend;
@@ -86,15 +85,17 @@ async function showPage(noteID, e, isloading = false) {
   if (e) {
     e.preventDefault();
   }
-
   if (!isloading) {
     saveContent();
   } else {
     loadNotes();
   }
   historyPages.push(noteID);
+  var link =
+    (await backend.getNotesDIR()) + "/" + noteID + "/" + noteID + ".html";
 
-  fetch(NOTES_DIR + "/" + noteID + "/" + noteID + ".html")
+  console.warn("dsfsdfsd  " + link);
+  fetch(link)
     .then((res) => {
       if (!res.ok) {
         throw new Error(`Note not found: ${notePath}`);
@@ -102,14 +103,14 @@ async function showPage(noteID, e, isloading = false) {
       return res.text();
     })
     .then((html) => (document.getElementById("editor").innerHTML = html))
-    .catch((err) => {
+    .catch(async (err) => {
       alert("Note not found, going back...");
       historyPages.pop();
       return;
     });
   loadpage();
 }
-function goBack() {
+async function goBack() {
   saveContent();
   if (historyPages.length == 1) {
     alert("No more history");
@@ -118,7 +119,7 @@ function goBack() {
   historyPages.pop();
   noteID = historyPages.at(-1);
 
-  fetch(NOTES_DIR + "/" + noteID + "/" + noteID + ".html")
+  fetch((await backend.getNotesDIR()) + "/" + noteID + "/" + noteID + ".html")
     .then((res) => res.text())
     .then((html) => (document.getElementById("editor").innerHTML = html));
   loadpage();
@@ -126,7 +127,7 @@ function goBack() {
 async function loadpage() {
   current_page = historyPages.at(-1);
   assets_locations = {};
-  await fetch(NOTES_DIR + "/" + current_page + "/meta.json")
+  await fetch((await backend.getNotesDIR()) + "/" + current_page + "/meta.json")
     .then((response) => {
       if (!response.ok) throw new Error("Failed to fetch JSON file");
 
@@ -371,12 +372,11 @@ if (localStorage.getItem("theme") === "dark") {
   body.setAttribute("data-theme", "dark");
 }
 
-// Handle toggle
-toggleBtn.addEventListener("click", () => {
+function toggleTheme() {
   const isDark = body.getAttribute("data-theme") === "dark";
   body.setAttribute("data-theme", isDark ? "light" : "dark");
   localStorage.setItem("theme", isDark ? "light" : "dark");
-});
+}
 document.addEventListener("keydown", function (event) {
   if (event.ctrlKey && event.key === "d") {
     event.preventDefault();
@@ -425,4 +425,8 @@ function toggleVisibility() {
   } else {
     flashcardsSection.style.display = "block";
   }
+}
+
+async function goHome() {
+  backend.goHome();
 }
