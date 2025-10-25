@@ -165,9 +165,11 @@ class Backend(QObject):
     def getNotesDIR(self):
         return "../" +filemanager.NOTES_DIR
         
-    @pyqtSlot(str,str,str)
+    @pyqtSlot(str,str,str ,result=str)
     def create_kb(self,title,summary,description ):
-        create_knowledge_base(title,description,summary)
+        id = uuid.uuid4().hex
+        create_knowledge_base(id,title,description,summary)
+        return id
     @pyqtSlot(str)
     def open_kb(self, kb_id):
         filemanager.NOTES_DIR = f"knowbases/{kb_id}"

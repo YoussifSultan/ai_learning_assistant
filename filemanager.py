@@ -209,9 +209,8 @@ def delete_note(note_id):
 # =========================================================
 # Create the Knowledge base
 # =========================================================
-def create_knowledge_base(title:str , description:str, summary:str):
+def create_knowledge_base(id:str,title:str , description:str, summary:str):
     # add base folder
-    id = uuid.uuid4().hex
     folder = Path( f"Knowbases/{id}")
     folder.mkdir(parents=True, exist_ok=True)
     # add knowbases to the json file
@@ -225,4 +224,8 @@ def create_knowledge_base(title:str , description:str, summary:str):
     NOTES_DIR= f"Knowbases/{id}"
     # Create root folder
     create_note(note_id="root", title=title, parent_id="root")
+    path = Path(NOTES_DIR) / "root" / "root.html"
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(f"<h3>{title} </h3>")
+    
     

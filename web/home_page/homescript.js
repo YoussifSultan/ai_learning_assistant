@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // 🔹 Function to create a card
-  const createCard = (kb_id, title, description, summary) => {
+  function createCard(kb_id, title, description, summary) {
     const card = document.createElement("article");
     card.classList.add("kb-card");
     card.setAttribute("role", "listitem");
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
     return card;
-  };
+  }
 
   // 🔹 Load initial Knowledge Bases
   try {
@@ -66,24 +66,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // 🔹 Save new KB from modal input
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", async () => {
     const title = document.getElementById("kb-title-input").value.trim();
     const description = document
       .getElementById("kb-description-input")
       .value.trim();
     const summary = document.getElementById("kb-summary-input").value.trim();
-    const id = backend.create_kb(title, summary, description);
+    const id = await backend.create_kb(title, summary, description);
 
     if (!title || !description) {
       alert("⚠️ Please fill in both the Title and Description.");
       return;
     }
-
-    const newCard = createCard(title, description, summary, id);
+    console.warn(id);
+    const newCard = createCard(id, title, description, summary);
 
     // Add to top with fade-in
     newCard.style.opacity = "0";
-    container.prepend(newCard);
+    container.appendChild(newCard);
     setTimeout(() => {
       newCard.style.transition = "opacity 0.4s ease";
       newCard.style.opacity = "1";
@@ -95,16 +95,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       .querySelectorAll("#kb-modal input, #kb-modal textarea")
       .forEach((el) => (el.value = ""));
   });
-  document.querySelectorAll(".kb-button").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const id = e.target.dataset.id;
-      console.warn(id);
-      backend.open_kb(id);
-    });
+  container.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".kb-button");
+    if (!btn) return; // Ignore clicks outside .kb-button
+
+    const id = btn.dataset.id;
+    console.warn(id);
+    await backend.open_kb(id);
   });
-  function toggleTheme() {
-    const isDark = body.getAttribute("data-theme") === "dark";
-    body.setAttribute("data-theme", isDark ? "light" : "dark");
-    localStorage.setItem("theme", isDark ? "light" : "dark");
-  }
 });

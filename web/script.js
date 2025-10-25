@@ -113,7 +113,7 @@ async function showPage(noteID, e, isloading = false) {
 async function goBack() {
   saveContent();
   if (historyPages.length == 1) {
-    alert("No more history");
+    goHome();
     return;
   }
   historyPages.pop();
